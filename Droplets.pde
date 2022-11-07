@@ -103,3 +103,32 @@ float r_sat; // rayon des satellites 1.89*r_bu
 
 //5.2.3
 //5.3.1
+
+
+
+
+
+
+IHM ihm;
+
+
+void settings() {
+  size((int)(1280*1.3),(int)(720*1.3));
+}
+
+
+
+void setup() {
+  
+   IHM ihm = new IHM(this);
+  //p2 = controlP5.addDropdownList("myList-p2",220,100,100,120);
+  //customize(p2); 
+}
+
+
+void draw() {
+  background(75);
+  
+  
+  ihm.printInterface();
+}
