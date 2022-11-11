@@ -1,5 +1,7 @@
 import controlP5.*;
 
+// TODO : telecharger la librairie
+
 class IHM {
   
   ControlP5 controlP5;

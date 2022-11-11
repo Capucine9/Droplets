@@ -120,7 +120,7 @@ void settings() {
 
 void setup() {
   
-   IHM ihm = new IHM(this);
+   ihm = new IHM(this);
   //p2 = controlP5.addDropdownList("myList-p2",220,100,100,120);
   //customize(p2); 
 }
