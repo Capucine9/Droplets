@@ -1,16 +1,16 @@
-float vel1 = 2; //velocite
-float vel2 = 8;
 
-//sphere
-float[] radius = {200, 50};
+
+//radius
+float [] radius = {200, 50};
 
 final int rez = 30; //resolution  %TODO%
 final int N = 2; //nombres particules
 final int REC_INTERP = 5; //nombre d'appels recurcif 
 
-float[][][] field;
+float [][][] field;
 int cols, rows, layers;
-ImplicitParticles particles;
+ImpliciteParticles particles;
+Resolving_interaction interactions;
 
 float f(float d) {
   return (d < 1) ? 8.0*pow(1 - d*d,2)/9 : 0;
@@ -18,7 +18,7 @@ float f(float d) {
 
 void setup() {
   size(1280, 720, P3D);
-  particles = new ImplicitParticles();
+  particles = new ImpliciteParticles();
   cols = 1 + width / rez;
   rows = 1 + height / rez;
   layers = 1 + width / rez;
@@ -312,6 +312,9 @@ void draw() {
   }
   
   particles.nextStep();
+  interactions = new Resolving_interaction();
+  System.out.println(interactions.vel_relative(particles.velocity));
+
 }
 
 // a,b,c et d egal a 0 ou 1 selon la couleur (on trouve l'etat/ la configuration du voxel) pour dessiner la configuration de notre voxel

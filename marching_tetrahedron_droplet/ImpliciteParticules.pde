@@ -1,24 +1,27 @@
-class ImplicitParticles {
+class ImpliciteParticles {
   ArrayList<PVector> points = new ArrayList<PVector>();
   ArrayList<PVector> dirs = new ArrayList<PVector>();
-
+  //velocity
+  ArrayList<PVector> velocity = new ArrayList<PVector>();
+  //float [] vel = {2, 8}; 
 
   float tailleZ = width-radius[0];
   float posX1 = radius[0];
   float posX2 = width-radius[1];
   float posY = height/2;
-  float velX = 1;
   float diff_hauteur = 75;
 
   //creation des spheres
-  ImplicitParticles() {
+  ImpliciteParticles() {
     // creation de la gouttelle de gauche
     points.add(new PVector(posX1, posY, tailleZ/2));
-    dirs.add(new PVector(velX, 0, 0));
+    dirs.add(new PVector(1, 0, 0));
+    velocity.add( new PVector(2, 0, 0));
     
     // creation de la gouttelle de droite
     points.add(new PVector(posX2, posY + diff_hauteur, tailleZ/2));
-    dirs.add(new PVector(-velX, 0, 0));
+    dirs.add(new PVector(-1, 0, 0));
+    velocity.add( new PVector(8, 0, 0));
   }
 
   // creation du mouvement
@@ -27,34 +30,9 @@ class ImplicitParticles {
       PVector p = points.get(i);
       PVector d = dirs.get(i);
       PVector dd = d.copy();
-      if (i==0) dd.mult(vel1);
-      else dd.mult(vel2);
+      if (i==0) dd.mult(velocity.get(i).x);
+      else dd.mult(velocity.get(i).x);
       p.add(dd);
-      // rebonds sur les parois
-      //if (p.x < 0+radius) {
-      //  p.x = 0+radius; 
-      //  d.x *= -1;
-      //}
-      //if (p.y < 0+radius) {
-      //  p.y = 0+radius; 
-      //  d.y *= -1;
-      //}
-      //if (p.z < 0+radius) {
-      //  p.z = 0+radius; 
-      //  d.z *= -1;
-      //}
-      //if (p.x > width-radius) {
-      //  p.x = width-radius; 
-      //  d.x *= -1;
-      //}
-      //if (p.y > height-radius) {
-      //  p.y = height-radius; 
-      //  d.y *= -1;
-      //}
-      //if (p.z > tailleZ) {
-      //  p.z = tailleZ; 
-      //  d.z *= -1;
-      //}
     }
   }
 
@@ -64,14 +42,12 @@ class ImplicitParticles {
     for (int r=0; r<N; r++){
       v += f(points.get(r).dist(n)/radius[r]);
     }
-    //for (PVector p : points) v += f(p.dist(n)/radius[0]); 
-    //v += f((height-j)/150);   //creation du sol
     return v;
   }
 
   // 0 or 1 evaluation des sommets
   int evalInt(float i, float j, float k) {
-    return (eval(i, j, k) >= 0.5) ? 1 : 0;
+    return (eval(i, j, k) >= 0.00001) ? 1 : 0;
   }
 
   PVector interp(float x1, float y1, float z1, float x2, float y2, float z2) {
