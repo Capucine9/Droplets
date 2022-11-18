@@ -16,7 +16,7 @@ float f(float d) {
   return (d < 1) ? 8.0*pow(1 - d*d,2)/9 : 0;
 }
 
-void setup() {
+void oldSetup() {
   size(1280, 720, P3D);
   particles = new ImpliciteParticles();
   cols = 1 + width / rez;
@@ -48,7 +48,7 @@ void poly(PVector v1, PVector v2, PVector v3, PVector v4) {
   endShape();
 }
 
-void draw() {
+void oldDraw() {
   background(0); 
   translate(0, 0, -width/2);
   lights();

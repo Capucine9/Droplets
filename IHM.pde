@@ -78,6 +78,9 @@ class IHM {
      }
     ddl.setColorBackground(color(60));
     ddl.setColorActive(color(255,128));
+    ddl.setValue(0);
+    ddl.setOpen(false);
+    ddl.setLabel(diameter[0]+"");
   } 
   
   void customizeVelocity(DropdownList ddl) {
@@ -89,6 +92,9 @@ class IHM {
      }
     ddl.setColorBackground(color(60));
     ddl.setColorActive(color(255,128));
+    ddl.setValue(0);
+    ddl.setOpen(false);
+    ddl.setLabel(velocity[0]+"");
   }
   
   void customizeDistance() {
@@ -100,6 +106,9 @@ class IHM {
      }
     this.distance.setColorBackground(color(60));
     this.distance.setColorActive(color(255,128));
+    this.distance.setValue(0);
+    this.distance.setOpen(false);
+    this.distance.setLabel(diffHeight[0]+"");
   }
   
   void customizeSpeed() {
@@ -111,6 +120,9 @@ class IHM {
      }
     this.speed_ddl.setColorBackground(color(100));
     this.speed_ddl.setColorActive(color(255,128));
+    this.speed_ddl.setValue(0);
+    this.speed_ddl.setOpen(false);
+    this.speed_ddl.setLabel(speed[0]+"");
   }
   
   

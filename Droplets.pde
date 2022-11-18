@@ -131,4 +131,49 @@ void draw() {
   
   
   ihm.printInterface();
+  
+  
+  // get distance
+  int variable = Integer.parseInt(""+ihm.distance.getItem((int)ihm.distance.getValue()).get("text"));
+  System.out.println(variable);
+  // get speed
+  float variable2 = Float.parseFloat(""+ihm.speed_ddl.getItem((int)ihm.speed_ddl.getValue()).get("text"));
+  System.out.println(variable2);
+  // get size Ball 1
+  variable2 = Float.parseFloat(""+ihm.L_diameter.getItem((int)ihm.L_diameter.getValue()).get("text"));
+  System.out.println(variable2);
+  // get speed Ball 1
+  variable2 = Float.parseFloat(""+ihm.L_velocity.getItem((int)ihm.L_velocity.getValue()).get("text"));
+  System.out.println(variable2);
+  // get size Ball 2
+  variable2 = Float.parseFloat(""+ihm.R_diameter.getItem((int)ihm.R_diameter.getValue()).get("text"));
+  System.out.println(variable2);
+  // get speed Ball 2
+  variable2 = Float.parseFloat(""+ihm.R_velocity.getItem((int)ihm.R_velocity.getValue()).get("text"));
+  System.out.println(variable2);
+  
+  // Structure (keys) of DropdownList.getItem()
+  // view
+  // color
+  // name
+  // text
+  // state
+  // value
+}
+
+
+void controlEvent(ControlEvent theEvent) {
+  // DropdownList is of type ControlGroup.
+  // A controlEvent will be triggered from inside the ControlGroup class.
+  // therefore you need to check the originator of the Event with
+  // if (theEvent.isGroup())
+  // to avoid an error message thrown by controlP5.
+
+  if (theEvent.isGroup()) {
+    // check if the Event was triggered from a ControlGroup
+    println("event from group : "+theEvent.getGroup().getValue()+" from "+theEvent.getGroup());
+  } 
+  else if (theEvent.isController()) {
+    println("event from controller : "+theEvent.getController().getValue()+" from "+theEvent.getController());
+  }
 }
