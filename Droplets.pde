@@ -113,23 +113,30 @@ IHM ihm;
 
 
 void settings() {
-  size((int)(1280*1.3),(int)(720*1.3));
+  size((int)(1280*1.3),(int)(720*1.3), P3D);
 }
 
 
 
 void setup() {
   
-   ihm = new IHM(this);
-  //p2 = controlP5.addDropdownList("myList-p2",220,100,100,120);
-  //customize(p2); 
+  ihm = new IHM(this);
+  initMarching();
+  
 }
 
 
 void draw() {
   background(75);
   
+  translate(0, 0, -width/2);
+  lights();
+  frameMarching();
   
+  
+  
+  
+  translate(0, 0, width/2);
   ihm.printInterface();
   
   
@@ -159,21 +166,4 @@ void draw() {
   // text
   // state
   // value
-}
-
-
-void controlEvent(ControlEvent theEvent) {
-  // DropdownList is of type ControlGroup.
-  // A controlEvent will be triggered from inside the ControlGroup class.
-  // therefore you need to check the originator of the Event with
-  // if (theEvent.isGroup())
-  // to avoid an error message thrown by controlP5.
-
-  if (theEvent.isGroup()) {
-    // check if the Event was triggered from a ControlGroup
-    println("event from group : "+theEvent.getGroup().getValue()+" from "+theEvent.getGroup());
-  } 
-  else if (theEvent.isController()) {
-    println("event from controller : "+theEvent.getController().getValue()+" from "+theEvent.getController());
-  }
 }

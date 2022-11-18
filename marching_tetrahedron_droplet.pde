@@ -3,7 +3,7 @@
 //radius
 float [] radius = {200, 50};
 
-final int rez = 30; //resolution  %TODO%
+final int rez = 50; //resolution  %TODO%
 final int N = 2; //nombres particules
 final int REC_INTERP = 5; //nombre d'appels recurcif 
 
@@ -16,8 +16,8 @@ float f(float d) {
   return (d < 1) ? 8.0*pow(1 - d*d,2)/9 : 0;
 }
 
-void oldSetup() {
-  size(1280, 720, P3D);
+void initMarching() {
+  //size(1280, 720, P3D);
   particles = new ImpliciteParticles();
   cols = 1 + width / rez;
   rows = 1 + height / rez;
@@ -48,10 +48,7 @@ void poly(PVector v1, PVector v2, PVector v3, PVector v4) {
   endShape();
 }
 
-void oldDraw() {
-  background(0); 
-  translate(0, 0, -width/2);
-  lights();
+void frameMarching() {
   
   //parcours de l'affichage
   for (int i = 0; i < cols-1; i++) {
