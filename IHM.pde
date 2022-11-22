@@ -42,11 +42,19 @@ class IHM {
   IHM(PApplet app) {
     this.controlP5 = new ControlP5(app);
     
+    // initialize the distance dropdownlist
     distance = controlP5.addDropdownList("...",550,level_height-15,100,300);
     distance.setFont(createFont("arial",15));
     customizeDistance();
     
     
+    // initialize the speed dropdownlist
+    speed_ddl = controlP5.addDropdownList("... ",width-120, level_height-15,100,300);
+    speed_ddl.setFont(createFont("arial",15));
+    customizeSpeed();
+    
+    
+    // customize diameter and velocity dropdownlist
     L_diameter = controlP5.addDropdownList("...  ",margeLeft*4,150,100,300);
     R_diameter = controlP5.addDropdownList("...   ", width-360+margeLeft*4,150,100,300);
     L_velocity = controlP5.addDropdownList("...    ",margeLeft*4+200,150,100,300);
@@ -64,11 +72,12 @@ class IHM {
     customizeVelocity(R_velocity);
     
     
-    speed_ddl = controlP5.addDropdownList("... ",width-120, level_height-15,100,300);
-    speed_ddl.setFont(createFont("arial",15));
-    customizeSpeed();
   }
   
+  
+  /**
+   * Customize diameter dropdownlist
+   **/
   void customizeDiameter(DropdownList ddl) {
     ddl.setBackgroundColor(color(190));
     ddl.setItemHeight(30);
@@ -83,6 +92,10 @@ class IHM {
     ddl.setLabel(diameter[0]+"");
   } 
   
+  
+  /**
+   * Customize velocity dropdownlist
+   **/
   void customizeVelocity(DropdownList ddl) {
     ddl.setBackgroundColor(color(190));
     ddl.setItemHeight(30);
@@ -97,13 +110,17 @@ class IHM {
     ddl.setLabel(velocity[0]+"");
   }
   
+  
+  /**
+   * Customize distance dropdownlist
+   **/
   void customizeDistance() {
     this.distance.setBackgroundColor(color(190));
     this.distance.setItemHeight(30);
     this.distance.setBarHeight(40);
     for ( int i = 0; i < diffHeight.length; i++ ) {
-       this.distance.addItem(diffHeight[i]+"", i+1);
-     }
+      this.distance.addItem(diffHeight[i]+"", i+1);
+    }
     this.distance.setColorBackground(color(60));
     this.distance.setColorActive(color(255,128));
     this.distance.setValue(0);
@@ -111,57 +128,38 @@ class IHM {
     this.distance.setLabel(diffHeight[0]+"");
   }
   
+  
+  /**
+   * Customize speed dropdownlist
+   **/
   void customizeSpeed() {
     this.speed_ddl.setBackgroundColor(color(190));
     this.speed_ddl.setItemHeight(30);
     this.speed_ddl.setBarHeight(40);
     for ( int i = 0; i < speed.length; i++ ) {
-       this.speed_ddl.addItem(speed[i]+"", i+1);
-     }
+      this.speed_ddl.addItem(speed[i]+"", i+1);
+    }
     this.speed_ddl.setColorBackground(color(100));
     this.speed_ddl.setColorActive(color(255,128));
     this.speed_ddl.setValue(0);
     this.speed_ddl.setOpen(false);
     this.speed_ddl.setLabel(speed[0]+"");
   }
+
   
   
   
+ 
   
   
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  void printInterface() {
-    
-    
+  void printInterface() {  
     
     // ======================================================================================
     // Height difference between the two droplets
     // ======================================================================================
     textSize(25);
     text("Distance de hauteur des centres des gouttes (cm) :", margeLeft, level_height);  // * 2.5 to avoid text in the windows bar
-    //textSize(20);
-    //for ( int i = 0; i < diffHeight.length; i++ ) {
-    //  if ( i == diffHeight_selected ) fill(255,0,0);
-    //  else fill(255);
-    //  text(diffHeight[i], 550 + (margeLeft*4)*(i+1), level);
-    //}
-    
-    
+   
     
     
     // ======================================================================================
@@ -172,8 +170,7 @@ class IHM {
     text("Vitesse (m/s) :", margeLeft+200, level_diameter_velocity);
     
     
-    
-    
+        
     // ======================================================================================
     // Right dorplet
     // ======================================================================================
@@ -182,14 +179,11 @@ class IHM {
     text("Vitesse (m/s) :", width-160, level_diameter_velocity);
     
     
-    
-    
-    
+
     // ======================================================================================
     // Simulation' velocity
     // ======================================================================================
-    text("Vitesse de la simulation : ", width-400,level_height);
-    
+    text("Vitesse de la simulation : ", width-400,level_height);    
   }
 
   

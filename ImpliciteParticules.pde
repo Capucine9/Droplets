@@ -11,7 +11,10 @@ class ImpliciteParticles {
   float posY = height/2;
   float diff_hauteur = 75;
 
-  //creation des spheres
+
+  /**
+   * Creation des spheres
+   **/
   ImpliciteParticles() {
     // creation de la gouttelle de gauche
     points.add(new PVector(posX1, posY, tailleZ/2));
@@ -23,8 +26,11 @@ class ImpliciteParticles {
     dirs.add(new PVector(-1, 0, 0));
     velocity.add( new PVector(8, 0, 0));
   }
+  
 
-  // creation du mouvement
+  /**
+   * Creation du mouvement
+   **/
   void nextStep() {
     for (int i = 0; i < N; i++) {
       PVector p = points.get(i);
@@ -36,6 +42,10 @@ class ImpliciteParticles {
     }
   }
 
+  
+  /**
+   *
+   **/
   float eval(float i, float j, float k) {
     PVector n = new PVector(i, j, k);
     float v = 0;
@@ -45,16 +55,24 @@ class ImpliciteParticles {
     return v;
   }
 
-  // 0 or 1 evaluation des sommets
+
+  /**
+   * Evaluation es sommets (0 ou 1)
+   **/
   int evalInt(float i, float j, float k) {
     return (eval(i, j, k) >= 0.00001) ? 1 : 0;
   }
+  
 
   PVector interp(float x1, float y1, float z1, float x2, float y2, float z2) {
     return interpRec(x1, y1, z1, x2, y2, z2, REC_INTERP);
   }
 
-  //dichotomie
+
+  
+  /**
+   * Algo dichotomie
+   **/
   PVector interpRec(float x1, float y1, float z1, float x2, float y2, float z2, int level) {
     PVector p1 = new PVector(x1, y1, z1);
     PVector p2 = new PVector(x2, y2, z2);
@@ -65,6 +83,7 @@ class ImpliciteParticles {
       return m;
     if (evalInt(m.x, m.y, m.z) == v1) return interpRec(m.x, m.y, m.z, x2, y2, z2, level-1);
     return interpRec(x1, y1, z1, m.x, m.y, m.z, level-1);
-  } // on arrete la recursion si les points a droite et a gauche (coins d'un pixel) ont la meme valeur (meme couleur) et on recupere donc le milieu du cote du pixel
-  //avec les 5 appels recursifs on arrive assez bien a ce rapprocher du point ou la valeur change
+    // on arrete la recursion si les points a droite et a gauche (coins d'un pixel) ont la meme valeur (meme couleur) et on recupere donc le milieu du cote du pixel
+    //avec les 5 appels recursifs on arrive assez bien a ce rapprocher du point ou la valeur change
+  } 
 }

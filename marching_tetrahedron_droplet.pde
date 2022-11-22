@@ -1,7 +1,7 @@
 
 
 //radius
-float [] radius = {200, 50};
+float [] radius = {200, 100};
 
 final int rez = 50; //resolution  %TODO%
 final int N = 2; //nombres particules
@@ -16,6 +16,7 @@ float f(float d) {
   return (d < 1) ? 8.0*pow(1 - d*d,2)/9 : 0;
 }
 
+
 void initMarching() {
   //size(1280, 720, P3D);
   particles = new ImpliciteParticles();
@@ -24,6 +25,7 @@ void initMarching() {
   layers = 1 + width / rez;
   field = new float[cols][rows][layers];
 }
+
 
 //triangle de rendu (si un unique point d'une couleur differente du reste)
 void triangl(PVector v1, PVector v2, PVector v3) {
@@ -47,6 +49,7 @@ void poly(PVector v1, PVector v2, PVector v3, PVector v4) {
   vertex(v3.x, v3.y, v3.z);
   endShape();
 }
+
 
 void frameMarching() {
   
