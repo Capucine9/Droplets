@@ -1,7 +1,7 @@
 
 
 //radius
-float [] radius = {200, 100};
+float [] radius = {200, 100}; //TODO : r[0]>=r[1]
 
 final int rez = 50; //resolution  %TODO%
 final int N = 2; //nombres particules
