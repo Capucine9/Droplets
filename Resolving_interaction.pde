@@ -23,6 +23,9 @@ class Resolving_interaction{
   float beta =              -1.23456; // pour calcul rayon rupture du ligament
   float r_0 =               -1.23456;
   float We_0 =              -1.23456;
+  float radius_bu =         -1.23456;
+  float radius_sat =        -1.23456;
+  float n_sat =             -1.23456;
    
     
   void init() {
@@ -53,11 +56,11 @@ class Resolving_interaction{
 
     //// Instabilite des ligaments
     beta = 3/(4*sqrt(2))*(k_1*k_2);
-    r_0; //TODO : déterminer r_0
+    //TODO : déterminer r_0
     We_0 = 2* r_0 * rho/sigma * pow(norm_vel_relative,2); //avec r_0 rayon initial egal a longueur initiale du cylindre 
 
     // determine le type de collision
-    calcul_We();
+    //calcul_We();
   }
   
   // determine le type de collision et lance la fonction de mise a jour des parametres associé
@@ -85,9 +88,9 @@ class Resolving_interaction{
     // mise à jour de la vitesse des gouttelettes
     Z = sqrt(1-We_reflex/We); 
     for (int i=0; i<2; i++){ 
-      velocity.get(i).x = calcul_velocity(i, velocity.get(i).x, velocity.get(1-i).x);
-      velocity.get(i).y = calcul_velocity(i, velocity.get(i).y, velocity.get(1-i).y);
-      velocity.get(i).z = calcul_velocity(i, velocity.get(i).z, velocity.get(1-i).z);
+      particles.velocity.get(i).x = calcul_velocity(i, particles.velocity.get(i).x, particles.velocity.get(1-i).x);
+      particles.velocity.get(i).y = calcul_velocity(i, particles.velocity.get(i).y, particles.velocity.get(1-i).y);
+      particles.velocity.get(i).z = calcul_velocity(i, particles.velocity.get(i).z, particles.velocity.get(1-i).z);
     }  
     V_lig = V_ligament(); 
     
@@ -96,24 +99,24 @@ class Resolving_interaction{
       // EQ8 r_sat 
       // radius_bu = equation_degre3(beta*sqrt(We_0), 1, 0, -1, r_0)
       // rayon des satellites
-      float radius_sat = 1.89 * radius_bu;
+      radius_sat = 1.89 * radius_bu;
       float [] radius_tmp = {radius[0],radius[1], radius_sat};
       radius = radius_tmp;
       // nombre de satellites par conservation de masse
       float volume_sat = volume(2);
       float n_sat_tmp = V_lig/volume_sat;
-      float n_sat = n_sat_tmp - 2;
+      n_sat = n_sat_tmp - 2;
     }
     
     // presence de satellites
     if (n_sat > 2){
       //vitesse des satellites
       for (int i=1; i<n_sat; i++){
-        velocity.add(velocity_sat(i));
+        particles.velocity.add(velocity_sat(i));
       }
       //rayons des gouttelettes = rayon du satellite (3 gouttelettes de meme rayon)
       for (int i=0; i<2; i++){
-        radius[i]=r_sat;
+        radius[i]=radius_sat;
       }
     }
   }
@@ -123,9 +126,9 @@ class Resolving_interaction{
     // mise à jour de la vitesse des gouttelettes
     Z = (X-sqrt((2.4*f_delta)/We)) / (1-sqrt((2.4*f_delta)/We));
     for (int i=0; i<2; i++){ 
-      velocity.get(i).x = calcul_velocity(i, velocity.get(i).x, velocity.get(1-i).x);
-      velocity.get(i).y = calcul_velocity(i, velocity.get(i).y, velocity.get(1-i).y);
-      velocity.get(i).z = calcul_velocity(i, velocity.get(i).z, velocity.get(1-i).z);
+      particles.velocity.get(i).x = calcul_velocity(i, particles.velocity.get(i).x, particles.velocity.get(1-i).x);
+      particles.velocity.get(i).y = calcul_velocity(i, particles.velocity.get(i).y, particles.velocity.get(1-i).y);
+      particles.velocity.get(i).z = calcul_velocity(i, particles.velocity.get(i).z, particles.velocity.get(1-i).z);
     }
     V_lig = V_ligament(); 
     
@@ -139,13 +142,13 @@ class Resolving_interaction{
       radius = radius_tmp;
       // nombre de satellites par conservation de masse
       float volume_sat = volume(2);
-      float n_sat = V_lig/volume_sat;
+      n_sat = V_lig/volume_sat;
     }
     // presence de satellites
     if ( n_sat > 0){
       //vitesse des satellites
       for (int i=1; i<n_sat; i++){
-        velocity.add(velocity_sat(i));
+        particles.velocity.add(velocity_sat(i));
       }
       
       //calcul des rayons des gouttelettes par conservation de masse
@@ -161,13 +164,13 @@ class Resolving_interaction{
     //calcul du nouveau volume
     float new_volume = volume(0) + volume(1);
     //mise a jour de la vitesse (conservation de la quantité de mouvement [energie cinetique])
-    velocity.get(0).x = (volume(0)*velocity.get(0).x + volume(1)*velocity.get(1).x) / new_volume;
-    velocity.get(0).y = (volume(0)*velocity.get(0).y + volume(1)*velocity.get(1).y) / new_volume;
-    velocity.get(0).z = (volume(0)*velocity.get(0).z + volume(1)*velocity.get(1).z) / new_volume;
+    particles.velocity.get(0).x = (volume(0)*particles.velocity.get(0).x + volume(1)*particles.velocity.get(1).x) / new_volume;
+    particles.velocity.get(0).y = (volume(0)*particles.velocity.get(0).y + volume(1)*particles.velocity.get(1).y) / new_volume;
+    particles.velocity.get(0).z = (volume(0)*particles.velocity.get(0).z + volume(1)*particles.velocity.get(1).z) / new_volume;
     //mise a jour de la position (centre de masse)
-    points.get(0).x = (volume(0)*points.get(0).x + volume(1)*points.get(1).x) / new_volume;
-    points.get(0).y = (volume(0)*points.get(0).y + volume(1)*points.get(1).y) / new_volume;
-    points.get(0).z = (volume(0)*points.get(0).z + volume(1)*points.get(1).z) / new_volume;
+    particles.points.get(0).x = (volume(0)*particles.points.get(0).x + volume(1)*particles.points.get(1).x) / new_volume;
+    particles.points.get(0).y = (volume(0)*particles.points.get(0).y + volume(1)*particles.points.get(1).y) / new_volume;
+    particles.points.get(0).z = (volume(0)*particles.points.get(0).z + volume(1)*particles.points.get(1).z) / new_volume;
     // mise a jour du rayon (conservation de masse)
     radius[0] = new_radius(new_volume);
     radius[1] = 0;
@@ -190,14 +193,14 @@ class Resolving_interaction{
    * Calcule la norme d'un vecteur
    **/
   float norm( PVector vector){
-    return pow(pow(vector.x,2)+pow(vector.y,2)+sqrt(vector.z,2));
+    return sqrt(pow(vector.x,2)+pow(vector.y,2)+pow(vector.z,2)); //TODO : Verif formule
   }
   
   // Resolution d'une equation du troisieme degre
-  ArrayList<float> equation_degre3(float a, float b, float c, float d, float r_0){
+  ArrayList<Float> equation_degre3(float a, float b, float c, float d, float r_0){
     float q = (2*pow(b,3)-9*a*b*c+27*pow(a,2)*d)/(27*pow(a,3));
-    float delta_1 = pow(q,2)+(4*pow(p,3))/27;
     float p = (3*a*c-pow(b,2))/(3*pow(a,2));
+    float delta_1 = pow(q,2)+(4*pow(p,3))/27;
     float X1 = pow((-q-sqrt(delta_1))/2, 0.33333333) + pow((-q+sqrt(delta_1))/2, 0.33333333) - b/(3*a);
     float delta_2 = pow(b+a*X1,2) - 4*a*(c+(b+a*X1)*X1);
     float X2 = (-b-a*X1-sqrt(delta_2))/(2*a);
@@ -206,16 +209,17 @@ class Resolving_interaction{
     float x1 = X1 * r_0; // TODO : X1 *=r_0 ?
     float x2 = X2 * r_0;
     float x3 = X3 * r_0;
-    ArrayList<float> r_bu = new ArrayList<float>();
+    ArrayList<Float> r_bu = new ArrayList<Float>();
     r_bu.add(x1);
     r_bu.add(x2);
     r_bu.add(x3);
+    return r_bu;
   }
   
   // Actualisation de la velocite des gouttelettes
   //EQ3
-  void calcul_velocity(int k, float vel_k, float vel_l){
-    float u = (pow(radius[k],3)*vel_k + pow(radius[1-k],3)*vel_l - pow(radius[1-k],3)*(vel_k-vel_l)*Z) / (pow(radius[k],3)+pow(radius[1-k],3));
+  float calcul_velocity(int k, float vel_k, float vel_l){
+    return (pow(radius[k],3)*vel_k + pow(radius[1-k],3)*vel_l - pow(radius[1-k],3)*(vel_k-vel_l)*Z) / (pow(radius[k],3)+pow(radius[1-k],3));
   }
   
   // volume dune sphere
@@ -236,9 +240,9 @@ class Resolving_interaction{
   // calcul de la vitesse des satellites avec n le numero du sat dont on calcul la vitesse et nsat le nbr totale de sat
   //EQ9
   PVector velocity_sat(int n){
-    float velx = v_interact(0)/V_lig * velocity.get(0).x + v_interact(1)/V_lig * (velocity.get(1).x+(1-2*n/(n_sat+1))*vel_relative(particles.velocity));
-    float vely = v_interact(0)/V_lig * velocity.get(0).y + v_interact(1)/V_lig * (velocity.get(1).y+(1-2*n/(n_sat+1))*vel_relative(particles.velocity));
-    float velz = v_interact(0)/V_lig * velocity.get(0).z + v_interact(1)/V_lig * (velocity.get(1).z+(1-2*n/(n_sat+1))*vel_relative(particles.velocity));
+    float velx = v_interact(0)/V_lig * particles.velocity.get(0).x + v_interact(1)/V_lig * (particles.velocity.get(1).x+(1-2*n/(n_sat+1))*vel_relative(particles.velocity).x);
+    float vely = v_interact(0)/V_lig * particles.velocity.get(0).y + v_interact(1)/V_lig * (particles.velocity.get(1).y+(1-2*n/(n_sat+1))*vel_relative(particles.velocity).y);
+    float velz = v_interact(0)/V_lig * particles.velocity.get(0).z + v_interact(1)/V_lig * (particles.velocity.get(1).z+(1-2*n/(n_sat+1))*vel_relative(particles.velocity).z);
     return new PVector(velx, vely, velz);
   }
   

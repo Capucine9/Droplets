@@ -1,6 +1,6 @@
 //// Physically-Based Droplet Interaction
 
-
+/*
 // Variables
 
 // Parametres de la gouttelette i
@@ -105,7 +105,7 @@ float r_sat; // rayon des satellites 1.89*r_bu
 //5.3.1
 
 
-
+*/
 
 
 
