@@ -1,53 +1,32 @@
 class Resolving_interaction{
-  
+    
   ImpliciteParticles particles;
+ 
+  float [] phi = {0.1, 0.2}; // fraction de volume qui se chevauche
+  float rho = 1; // densite (kg/L)
+  float sigma = 73; // tension superficielle (mN/m)
+  float k_1 = 11.5;
+  float k_2 = 0.45;
   
-  // calcul de la norme de la velocité relative
-  float norm_vel_relative = norm(vel_relative(particles.velocity));
-  
-  // Weber Number (rapport entre les forces d'inertie et les forces de tension superficielle)
-  float We = (2 * rho * radius[1] * pow(norm_vel_relative,2)) / sigma;
-  
-  //// Reflexive separation
-  //EQ2
-  float We_reflex = (3*(7*pow((1+pow(delta,3)),2/3)-4*(1+pow(delta,2)))*delta*pow((1+pow(delta,3)),2)) / (pow(delta,6)*eta_1+eta_2);
+  float delta = radius[1] / radius[0]; // Size ratio
+
+  float f_delta =           -1.23456;
+  float norm_vel_relative = -1.23456;
+  float We =                -1.23456;
+  float We_reflex =         -1.23456;
+  float X =                 -1.23456;
+  float ksi =               -1.23456;
+  float eta_1 =             -1.23456;
+  float eta_2 =             -1.23456;
+  float V_lig =             -1.23456; // volume du ligament
+  float Z =                 -1.23456; // pour calcul de la nvelle vitesse de la gouttelette
+  float beta =              -1.23456; // pour calcul rayon rupture du ligament
+  float r_0 =               -1.23456;
+  float We_0 =              -1.23456;
    
-  // volume du ligament
-  float V_lig;
-  
-  
-  
-  
-    // fraction de volume qui se chevauche
-    float [] phi = {0.1, 0.2};
-    
-    float rho = 1; // densite (kg/L)
-    float sigma = 73; // tension superficielle (mN/m)
-    
-    
-    // Size ratio
-    float delta = radius[1] / radius[0];
-    
-    
-    float f_delta =           -1.23456;
-    float norm_vel_relative = -1.23456;
-    float We =                -1.23456;
-    PVector u_dist =          new PVector(0,0,0);
-    PVector u_dist2 =         new PVector(0,0,0);
-    PVector x =               new PVector(0,0,0);
-    float norm_x =            -1.23456;
-    float X =                 -1.23456;
-    float ksi =               -1.23456;
-    float eta_1 =             -1.23456;
-    float eta_2 =             -1.23456;
     
   void init() {
-    
-  
     f_delta = pow(delta,-3)-2.4*pow(delta,-2)+2.7*pow(delta,-1);
-    
-    
-    
     
     // Impact (plus courte distance entre les deux centres des gouttelettes orthogonaux à la vitesse relative)
     PVector u_dist = vel_relative(particles.velocity).mult(1/norm_vel_relative);
@@ -55,67 +34,42 @@ class Resolving_interaction{
     PVector x = u_dist2.mult((particles.points.get(1).x - particles.points.get(0).x) - (particles.points.get(1).y - particles.points.get(0).y));
     float norm_x = norm(x) ;
     float X = norm_x / (radius[0] + radius[1]); 
-
-    // Weber Number (rapport entre les forces d'inertie et les forces de tension superficielle)
-    // calcul de la norme de la velocité relative
-    norm_vel_relative = norm(vel_relative(particles.velocity));
-    
-    
-    u_dist = vel_relative(particles.velocity).mult(1/norm_vel_relative);
-    u_dist2 = new PVector(u_dist.x * u_dist.x, u_dist.y * u_dist.y, u_dist.z * u_dist.z);
-    x = u_dist2.mult((particles.points.get(1).x - particles.points.get(0).x) - (particles.points.get(1).y - particles.points.get(0).y));
-    norm_x = norm(x) ;
-    X = norm_x / (radius[0] + radius[1]); 
-
     
     ksi = 0.5*X*(1+delta);
     
-    float eta_1 = 2*pow(1-ksi,2)*sqrt((1-pow(ksi,2)))-1;
-    float eta_2 = 2*pow(delta-ksi,2)*sqrt(pow(delta,2)-pow(ksi,2))-pow(delta,3);
+    eta_1 = 2*pow(1-ksi,2)*sqrt((1-pow(ksi,2)))-1;
+    eta_2 = 2*pow(delta-ksi,2)*sqrt(pow(delta,2)-pow(ksi,2))-pow(delta,3);
     
-    
-    
-    
-    
-  
-  
-  
-    // pour calcul de la nvelle vitesse de la gouttelette
-    float  z; 
-    // si stretching separation : 
-    z = (X-sqrt((2.4*f_delta)/We)) / (1-sqrt((2.4*f_delta)/We));
-    // si reflexive separation : 
-    z = sqrt(1-We_reflex/We);  
 
+    // calcul de la norme de la velocité relative
+    norm_vel_relative = norm(vel_relative(particles.velocity));
+    
+    // Weber Number (rapport entre les forces d'inertie et les forces de tension superficielle)
+    We = (2 * rho * radius[1] * pow(norm_vel_relative,2)) / sigma;
+    
+    //// Reflexive separation
+    //EQ2
+    We_reflex = (3*(7*pow((1+pow(delta,3)),2/3)-4*(1+pow(delta,2)))*delta*pow((1+pow(delta,3)),2)) / (pow(delta,6)*eta_1+eta_2);
 
-
-    
-    
-    
-    //EQ4 ??????????
-    // volume du ligament liquide resultant
-    // Reflexive separation
-    // V_lig = volume(0) + volume(1);
-    
-    
     //// Instabilite des ligaments
-    float k_1 = 11.5;
-    float k_2 = 0.45;
-    float beta = 3/(4*sqrt(2))*(k_1*k_2);
-    float r_0;
-    float We_0 = 2* r_0 * rho/sigma * pow(norm_vel_relative,2); //avec r_0 rayon initial egal a longueur initiale du cylindre 
+    beta = 3/(4*sqrt(2))*(k_1*k_2);
+    r_0; //TODO : déterminer r_0
+    We_0 = 2* r_0 * rho/sigma * pow(norm_vel_relative,2); //avec r_0 rayon initial egal a longueur initiale du cylindre 
 
-
+    // determine le type de collision
+    calcul_We();
   }
   
-  
+  // determine le type de collision et lance la fonction de mise a jour des parametres associé
   void calcul_We(){
-    // Reflexive separation
-    if (We > We_reflex){reflexive_separation();}
-    
     //// Stretching separation
     //EQ1
     float We_stretch = (4*pow(1+pow(delta,3),2) * sqrt(3*(1+delta)*(1-X)*(pow(delta,3)*phi[1]+phi[0]))) / (pow(delta,2)*((1+pow(delta,3))-(1-pow(X,2))*(phi[1]+pow(delta,3)*phi[0])));
+                  
+    // Reflexive separation
+    if (We > We_reflex){reflexive_separation();}
+    
+    // Stretching separation
     else if (We > We_stretch){stretching_separation();} //TODO : PROBLEME LIGNE D'AVANT
     
     // Coalescence
@@ -129,6 +83,7 @@ class Resolving_interaction{
   // Reflexive separation
   void reflexive_separation(){
     // mise à jour de la vitesse des gouttelettes
+    Z = sqrt(1-We_reflex/We); 
     for (int i=0; i<2; i++){ 
       velocity.get(i).x = calcul_velocity(i, velocity.get(i).x, velocity.get(1-i).x);
       velocity.get(i).y = calcul_velocity(i, velocity.get(i).y, velocity.get(1-i).y);
@@ -166,6 +121,7 @@ class Resolving_interaction{
   // Stretching separation
   void stretching_separation(){
     // mise à jour de la vitesse des gouttelettes
+    Z = (X-sqrt((2.4*f_delta)/We)) / (1-sqrt((2.4*f_delta)/We));
     for (int i=0; i<2; i++){ 
       velocity.get(i).x = calcul_velocity(i, velocity.get(i).x, velocity.get(1-i).x);
       velocity.get(i).y = calcul_velocity(i, velocity.get(i).y, velocity.get(1-i).y);
@@ -218,19 +174,6 @@ class Resolving_interaction{
   }
   
   
-  
-  
-  
-  
-  
-  
-  // velocite relative
-  /*PVector vel_relative(ArrayList<PVector> vel){
-    eta_1 = 2*pow(1-ksi,2)*pow((1-pow(ksi,2)),1/2)-1;
-    eta_2 = 2*pow(delta-ksi,2)*pow((pow(delta,2)-pow(ksi,2)),(1/2))-pow(delta,3);
-  }*/
-  
-  
   /**
    * Calcule la vitesse relative entre les deux sphere
    **/
@@ -243,13 +186,11 @@ class Resolving_interaction{
     return u_ij;
   }
   
-  // calcul de norme d'un vecteur
-  
   /**
    * Calcule la norme d'un vecteur
    **/
   float norm( PVector vector){
-    return pow(pow(vector.x,2)+pow(vector.y,2)+pow(vector.z,2),1/2);
+    return pow(pow(vector.x,2)+pow(vector.y,2)+sqrt(vector.z,2));
   }
   
   // Resolution d'une equation du troisieme degre
@@ -262,7 +203,7 @@ class Resolving_interaction{
     float X2 = (-b-a*X1-sqrt(delta_2))/(2*a);
     float X3 = (-b-a*X1+sqrt(delta_2))/(2*a);
     
-    float x1 = X1 * r_0;
+    float x1 = X1 * r_0; // TODO : X1 *=r_0 ?
     float x2 = X2 * r_0;
     float x3 = X3 * r_0;
     ArrayList<float> r_bu = new ArrayList<float>();
@@ -271,14 +212,10 @@ class Resolving_interaction{
     r_bu.add(x3);
   }
   
-  
-  
-    
   // Actualisation de la velocite des gouttelettes
   //EQ3
-  // k la gouttelette dont on calcul la nvelle vitesse
   void calcul_velocity(int k, float vel_k, float vel_l){
-    float u = (pow(radius[k],3)*vel_k + pow(radius[1-k],3)*vel_l - pow(radius[1-k],3)*(vel_k-vel_l)*z) / (pow(radius[k],3)+pow(radius[1-k],3));
+    float u = (pow(radius[k],3)*vel_k + pow(radius[1-k],3)*vel_l - pow(radius[1-k],3)*(vel_k-vel_l)*Z) / (pow(radius[k],3)+pow(radius[1-k],3));
   }
   
   // volume dune sphere
