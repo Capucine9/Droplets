@@ -111,6 +111,9 @@ float r_sat; // rayon des satellites 1.89*r_bu
 
 IHM ihm;
 
+Resolving_interaction resolv;
+
+boolean collision = false;
 
 void settings() {
   size((int)(1280*1.3),(int)(720*1.3), P3D);
@@ -122,7 +125,9 @@ void setup() {
   
   ihm = new IHM(this);
   initMarching();
-  
+  resolv = new Resolving_interaction();
+  resolv.init();
+  //resolv.calcul_We();
 }
 
 
@@ -142,22 +147,22 @@ void draw() {
   
   // get distance
   int variable = Integer.parseInt(""+ihm.distance.getItem((int)ihm.distance.getValue()).get("text"));
-  System.out.println(variable);
+  //System.out.println(variable);
   // get speed
   float variable2 = Float.parseFloat(""+ihm.speed_ddl.getItem((int)ihm.speed_ddl.getValue()).get("text"));
-  System.out.println(variable2);
+  //System.out.println(variable2);
   // get size Ball 1
   variable2 = Float.parseFloat(""+ihm.L_diameter.getItem((int)ihm.L_diameter.getValue()).get("text"));
-  System.out.println(variable2);
+  //System.out.println(variable2);
   // get speed Ball 1
   variable2 = Float.parseFloat(""+ihm.L_velocity.getItem((int)ihm.L_velocity.getValue()).get("text"));
-  System.out.println(variable2);
+  //System.out.println(variable2);
   // get size Ball 2
   variable2 = Float.parseFloat(""+ihm.R_diameter.getItem((int)ihm.R_diameter.getValue()).get("text"));
-  System.out.println(variable2);
+  //System.out.println(variable2);
   // get speed Ball 2
   variable2 = Float.parseFloat(""+ihm.R_velocity.getItem((int)ihm.R_velocity.getValue()).get("text"));
-  System.out.println(variable2);
+  //System.out.println(variable2);
   
   // Structure (keys) of DropdownList.getItem()
   // view
@@ -166,4 +171,12 @@ void draw() {
   // text
   // state
   // value
+  
+  // collision
+  if (particles.points.get(1).x - particles.points.get(0).x < 0 && collision == false){
+    collision = true;
+    //particles.limite = 0.5;
+    resolv.calcul_We(); // determine le type de collision
+  }
+  
 }

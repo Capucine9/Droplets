@@ -1,8 +1,3 @@
-
-
-//radius
-float [] radius = {200, 100}; //TODO : r[0]>=r[1]
-
 final int rez = 50; //resolution  %TODO%
 final int N = 2; //nombres particules
 final int REC_INTERP = 5; //nombre d'appels recurcif 
@@ -311,10 +306,8 @@ void frameMarching() {
     }
   }
   
-  particles.nextStep();
   interactions = new Resolving_interaction();
-  System.out.println(interactions.vel_relative(particles.velocity));
-
+  particles.nextStep();
 }
 
 // a,b,c et d egal a 0 ou 1 selon la couleur (on trouve l'etat/ la configuration du voxel) pour dessiner la configuration de notre voxel

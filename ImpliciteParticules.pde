@@ -1,15 +1,17 @@
 class ImpliciteParticles {
   ArrayList<PVector> points = new ArrayList<PVector>();
-  ArrayList<PVector> dirs = new ArrayList<PVector>();
-  //velocity
+  //ArrayList<PVector> dirs = new ArrayList<PVector>();
   ArrayList<PVector> velocity = new ArrayList<PVector>();
-  //float [] vel = {2, 8}; 
+  //radius
+  ArrayList<Float> radius = new ArrayList<Float>();
+  //float [] radius = {100, 100}; //TODO : r[0]>=r[1]
 
-  float tailleZ = width-radius[0];
-  float posX1 = radius[0];
-  float posX2 = width-radius[1];
+
+  float tailleZ = width-radius.get(0);
+  float posX1 = radius.get(0);
+  float posX2 = width-radius.get(1);
   float posY = height/2;
-  float diff_hauteur = 75;
+  float diff_hauteur = 50;
 
 
   /**
@@ -18,13 +20,13 @@ class ImpliciteParticles {
   ImpliciteParticles() {
     // creation de la gouttelle de gauche
     points.add(new PVector(posX1, posY, tailleZ/2));
-    dirs.add(new PVector(1, 0, 0));
-    velocity.add( new PVector(2, 0, 0));
+    //dirs.add(new PVector(1, 0, 0));
+    velocity.add( new PVector(4, 0, 0));
     
     // creation de la gouttelle de droite
     points.add(new PVector(posX2, posY + diff_hauteur, tailleZ/2));
-    dirs.add(new PVector(-1, 0, 0));
-    velocity.add( new PVector(8, 0, 0));
+    //dirs.add(new PVector(-1, 0, 0));
+    velocity.add( new PVector(-4, 0, 0));
   }
   
 
@@ -34,11 +36,7 @@ class ImpliciteParticles {
   void nextStep() {
     for (int i = 0; i < N; i++) {
       PVector p = points.get(i);
-      PVector d = dirs.get(i);
-      PVector dd = d.copy();
-      if (i==0) dd.mult(velocity.get(i).x);
-      else dd.mult(velocity.get(i).x);
-      p.add(dd);
+      p.add(velocity.get(i));
     }
   }
 
@@ -50,7 +48,7 @@ class ImpliciteParticles {
     PVector n = new PVector(i, j, k);
     float v = 0;
     for (int r=0; r<N; r++){
-      v += f(points.get(r).dist(n)/radius[r]);
+      v += f(points.get(r).dist(n)/radius.get(r));
     }
     return v;
   }
