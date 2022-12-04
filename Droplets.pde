@@ -127,7 +127,10 @@ void setup() {
   initMarching();
   resolv = new Resolving_interaction();
   resolv.init();
-  //resolv.calcul_We();
+  resolv.calcul_We();
+  
+  if ( particles.radius.get(0)+particles.radius.get(1) <= particles.diff_hauteur)
+    System.out.println("No collision");
 }
 
 
@@ -173,10 +176,13 @@ void draw() {
   // value
   
   // collision
-  if (particles.points.get(1).x - particles.points.get(0).x < 0 && collision == false){
-    collision = true;
-    //particles.limite = 0.5;
-    resolv.calcul_We(); // determine le type de collision
+  if ( particles.radius.get(0)+particles.radius.get(1) > particles.diff_hauteur) {
+    if (particles.points.get(1).x - particles.points.get(0).x < 0 && collision == false){
+      collision = true;
+      //particles.limite = 0.5;
+      resolv.calcul_We(); // determine le type de collision
+    }
   }
+  
   
 }

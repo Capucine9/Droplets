@@ -3,7 +3,7 @@ class Resolving_interaction{
   //ImpliciteParticles particles;
  
   float rho = 1; // densite (kg/L)
-  float sigma = 73; // tension superficielle (mN/m)
+  float sigma = 73; // tension superficielle = 73 (mN/m)
   float k_1 = 11.5; //donnees
   float k_2 = 0.45;
   
@@ -14,6 +14,7 @@ class Resolving_interaction{
   float norm_vel_relative = -1.23456;
   float We =                -1.23456;
   float We_reflex =         -1.23456;
+  double We_stretch =        -1.23456;
   float X =                 -1.23456;
   float ksi =               -1.23456;
   float eta_1 =             -1.23456;
@@ -27,6 +28,8 @@ class Resolving_interaction{
   float radius_bu =         2;
   float radius_sat =        -1.23456;
   float n_sat =             -1.23456;
+  
+  float hauteur_collision;
    
     
   void init() {
@@ -40,18 +43,33 @@ class Resolving_interaction{
     PVector u_dist2 = new PVector(u_dist.x * u_dist.x, u_dist.y * u_dist.y, u_dist.z * u_dist.z);
     PVector x = u_dist2.mult((particles.points.get(1).x - particles.points.get(0).x) - (particles.points.get(1).y - particles.points.get(0).y));
     float norm_x = norm(x) ;
-    float X = norm_x / (particles.radius.get(0) + particles.radius.get(1)); 
     
     // fraction de volume qui se chevauche
-    float hauteur_collision = (particles.points.get(1).y+particles.radius.get(1)) - (particles.points.get(0).y-particles.radius.get(0));
+    hauteur_collision = (particles.points.get(1).y+particles.radius.get(1)) - (particles.points.get(0).y-particles.radius.get(0));
+    
+    X = particles.diff_hauteur / (particles.radius.get(0) + particles.radius.get(1)); 
+    
+    System.out.println("X = "+X);
+    
+    System.out.println("Pos Y Gauche = "+particles.points.get(0).y);
+    System.out.println("Terme gauche = "+(particles.points.get(0).y-particles.radius.get(0)));
+    System.out.println("Pos Y Droite = "+particles.points.get(1).y);
+    System.out.println("Terme droite = "+(particles.points.get(1).y+particles.radius.get(1)));
+    System.out.println("Hauteur collision = "+hauteur_collision);
+    
     for (int i=0; i<2; i++){
       phi[i] = volume_calotte(i, hauteur_collision)/volume(i);
     }
+    System.out.println("PhiI = "+phi[0]);
+    System.out.println("PhiJ = "+phi[1]);
     
     ksi = 0.5*X*(1+delta);
+    System.out.println("Ksi = "+ksi);
     
     eta_1 = 2*pow(1-ksi,2)*sqrt((1-pow(ksi,2)))-1;
     eta_2 = 2*pow(delta-ksi,2)*sqrt(pow(delta,2)-pow(ksi,2))-pow(delta,3);
+    System.out.println("Eta 1 = "+ eta_1);
+    System.out.println("Eta 2 = "+ eta_2);
     
 
     // calcul de la norme de la velocité relative
@@ -62,13 +80,32 @@ class Resolving_interaction{
     
     //// Reflexive separation
     //EQ2
-    We_reflex = (3*(7*pow((1+pow(delta,3)),2/3)-4*(1+pow(delta,2)))*delta*pow((1+pow(delta,3)),2)) / (pow(delta,6)*eta_1+eta_2);
+    float terme = (7*pow((1+pow(delta,3)),0.66666666))-4*(1+pow(delta,2));
+    We_reflex = (3*terme*delta*pow((1+pow(delta,3)),2)) / (pow(delta,6)*eta_1+eta_2);
+    System.out.println("Terme = "+terme);
+    System.out.println("Numerateur = "+( 3*delta*pow((1+pow(delta,3)),2) ) );
+    System.out.println("Denominateur = "+( (pow(delta,6)*eta_1+eta_2) )  );
+    System.out.println("Somme eta = "+(eta_1+eta_2));
 
+    //// Stretching separation
+    //EQ1
+    We_stretch = (4*pow(1+pow(delta,3),2) * sqrt(3*(1+delta)*(1-X)*(pow(delta,3)*phi[1]+phi[0]))) / (pow(delta,2)*((1+pow(delta,3))-(1-pow(X,2))*(phi[1]+pow(delta,3)*phi[0])));
+   double f = 4*pow(1+pow(delta,3),2);
+   //double f1 = sqrt(3*(1+delta)*(1-X)*(pow(delta,3)*phi[1]+phi[0]));
+   double f1 = sqrt(3*(1+delta));
+   double f2 = 1-X;
+   double f3 = sqrt(pow(delta,3)*phi[1]+phi[0]);
+   double s = (pow(delta,2)*((1+pow(delta,3))-(1-pow(X,2))*(phi[1]+pow(delta,3)*phi[0])));
+   System.out.println(f+" "+f1+" "+f2+" "+f3+" "+s);
+   
     //// Instabilite des ligaments
     beta = 3/(4*sqrt(2))*(k_1*k_2);
-    //TODO : déterminer r_0
-    We_0 = 2* r_0 * rho/sigma * pow(norm_vel_relative,2); //avec r_0 rayon initial egal a longueur initiale du cylindre 
-
+    r_0 = hauteur_collision * 0.5;
+    We_0 = 2* r_0 * (rho/sigma) * pow(norm_vel_relative,2); //avec r_0 rayon initial egal a longueur initiale du cylindre 
+    System.out.println("rho = "+rho);
+    System.out.println("sigma = "+sigma);
+    System.out.println("r_0 = "+r_0);
+    System.out.println("div = "+(rho/sigma));
     // determine le type de collision
     //calcul_We();
     
@@ -76,15 +113,13 @@ class Resolving_interaction{
   
   // determine le type de collision et lance la fonction de mise a jour des parametres associé
   void calcul_We(){
-    //// Stretching separation
-    //EQ1
-    float We_stretch = (4*pow(1+pow(delta,3),2) * sqrt(3*(1+delta)*(1-X)*(pow(delta,3)*phi[1]+phi[0]))) / (pow(delta,2)*((1+pow(delta,3))-(1-pow(X,2))*(phi[1]+pow(delta,3)*phi[0])));
-    
+ 
     System.out.println("We "+ We);
+    System.out.println("We_reflex "+ We_reflex);
     System.out.println("We_stretch "+ We_stretch);
                   
     // Reflexive separation
-    if (We > We_reflex){
+    if (We > We_reflex && We_reflex > 0 ){
       System.out.println("Reflexive separation");
       reflexive_separation();
     }
@@ -127,7 +162,7 @@ class Resolving_interaction{
       n_sat = V_lig/volume_sat;
       n_sat = n_sat - 2;
     }
-    // presence de satellites
+    // presence de satellites 
     if (n_sat > 0){
       // rayons des satellites
       for (int i=1; i<n_sat-1; i++){
@@ -159,37 +194,63 @@ class Resolving_interaction{
     V_lig = V_ligament(); 
     
     if (V_lig > 0){
-      // TODO :
-      //r_0
       // EQ8 r_sat 
-      // radius_bu = equation_degre3(beta*sqrt(We_0), 1, 0, -1, r_0)
+      System.out.println("beta = "+beta);
+      System.out.println("sqrt(We_0) = "+We_0);
+      ArrayList<Float> resEq = equation_degre3(beta*sqrt(We_0), 1, 0, -1, r_0);
+      System.out.println("resEq = "+resEq);
+      float diff_0 = 10000;
+      int i_tmp = 0;
+      do {
+        if ( r_0 > resEq.get(i_tmp) && r_0 - resEq.get(i_tmp) < diff_0 ) {
+          diff_0 = r_0 - resEq.get(i_tmp);
+          radius_bu = resEq.get(i_tmp);
+        }
+        i_tmp++;
+      }
+      while ( i_tmp < resEq.size());
+      System.out.println("R_0 = "+r_0);
+      System.out.println("radius_bu = "+radius_bu);
+      
       // rayon des satellites
       radius_sat = 1.89 * radius_bu;
       particles.radius.add(radius_sat);
       // nombre de satellites par conservation de masse
       float volume_sat = volume(2);
       n_sat = V_lig/volume_sat;
-    }
-    // presence de satellites
-    if ( n_sat > 0){
-      // rayon des satellites
-      for (int i=1; i<n_sat-1; i++){
-        particles.radius.add(radius_sat);
-      }
-      //vitesse des satellites
-      for (int i=1; i<n_sat; i++){
-        particles.velocity.add(velocity_sat(i));
+      
+      // presence de satellites
+      if ( n_sat > 0) {
+        System.out.println("n_sat = "+n_sat);
+        
+        System.out.println("rad = "+particles.radius.size());
+        System.out.println("velocity = "+particles.velocity.size());
+        // rayon des satellites
+        for (int i=1; i<=n_sat-1; i++){
+          particles.radius.add(radius_sat);
+        }
+        //vitesse des satellites
+        for (int i=1; i<=n_sat; i++){
+          particles.velocity.add(velocity_sat(i));
+        }
+        
+        //calcul des rayons des gouttelettes par conservation de masse
+        for (int i=0; i<2; i++){
+          float new_volume = volume(i) - v_interact(i);
+          particles.radius.set(i,new_radius(new_volume));
+        }
+        
+        System.out.println("rad = "+particles.radius.size());
+        System.out.println("velocity = "+particles.velocity.size());
+      
+      } else {
+        particles.radius.remove(2);
       }
       
-      //calcul des rayons des gouttelettes par conservation de masse
-      for (int i=0; i<2; i++){
-        float new_volume = volume(i) - v_interact(i);
-        particles.radius.set(i,new_radius(new_volume));
-      }
-    } 
-    else {
-      particles.radius.remove(2);
+      particles.printMissingParticles();
     }
+    
+    System.out.println(V_lig);
   }
   
   // Coalescence
@@ -243,9 +304,28 @@ class Resolving_interaction{
     float x2 = X2 * r_0;
     float x3 = X3 * r_0;
     ArrayList<Float> r_bu = new ArrayList<Float>();
-    r_bu.add(x1);
-    r_bu.add(x2);
-    r_bu.add(x3);
+    if ( !Float.isNaN(x1) ) r_bu.add(x1);
+    if ( !Float.isNaN(x2) ) r_bu.add(x2);
+    if ( !Float.isNaN(x3) ) r_bu.add(x3);
+    
+    System.out.println("==========================================");
+      System.out.println("a = "+a);
+      System.out.println("b = "+b);
+      System.out.println("c = "+c);
+      System.out.println("d = "+d);
+      System.out.println("q = "+q);
+      System.out.println("p = "+p);
+      System.out.println("delta_1 = "+delta_1);
+      System.out.println("X1 = "+X1);
+      System.out.println("delta_2 = "+delta_2);
+      System.out.println("X2 = "+X2);
+      System.out.println("X3 = "+X3);
+      System.out.println("------------------------------");
+      System.out.println("x1 = "+x1);
+      System.out.println("x2 = "+x2);
+      System.out.println("x3 = "+x3);
+      System.out.println("==========================================");
+      
     return r_bu;
   }
   
@@ -257,7 +337,11 @@ class Resolving_interaction{
   
   // volume dune sphere
   float volume(int k){
-    return 4/3*PI*pow(particles.radius.get(k),3); 
+    //System.out.println("Radius = "+particles.radius.get(k));
+    //System.out.println("Pow = "+pow(particles.radius.get(k),3));
+    //System.out.println("4*PI/3 = "+(4*PI)/3);
+    //System.out.println("Return = "+((4*PI)/3)*pow(particles.radius.get(k),3));
+    return ((4*PI)/3)*pow(particles.radius.get(k),3); 
   }
   
   // rayon a partir dun volume
@@ -267,6 +351,7 @@ class Resolving_interaction{
   
   // calcul de phi 
   float volume_calotte(int k, float h){
+    System.out.println(k+" "+h);
     return (PI*pow(h,2)*(3*particles.radius.get(k)-h))/3;
   }
   
@@ -288,14 +373,47 @@ class Resolving_interaction{
   float V_ligament(){
     float tau = (1-X)*(1+delta);
     float E_dissip = 0.30; // pour l'energie cinetique initiale des gouttelettes en collision
+    E_dissip = (0.5*volume(0)*pow(particles.velocity.get(0).x,2)) + (0.5*volume(1)*pow(particles.velocity.get(1).x,2));
+    E_dissip += (0.5*volume(0)*pow(particles.velocity.get(0).y,2)) + (0.5*volume(1)*pow(particles.velocity.get(1).y,2));
+    E_dissip += (0.5*volume(0)*pow(particles.velocity.get(0).z,2)) + (0.5*volume(1)*pow(particles.velocity.get(1).z,2));
+    E_dissip *= 0.3;
     //EQ7
     float E_surface = 2*sigma*sqrt(PI*volume(0)*particles.radius.get(0)*tau*(phi[0]+ pow(delta,3)* phi[1]));
     //// Volume des ligaments liquide
     //EQ6
-    float E_stretch = 1/2* rho* pow(norm_vel_relative,2)* volume(0)* (pow(delta,3)/(pow((1+pow(delta,3)),2)))* ((1+pow(delta,3))- (1-pow(X,2))* ((phi[1]+ pow(delta,3)* phi[0])));
+    float E_stretch = 0.5 * rho* pow(norm_vel_relative,2)* volume(0)* (pow(delta,3)/pow(1+pow(delta,3),2))* ((1+pow(delta,3))- (1-pow(X,2))* (phi[1]+ pow(delta,3)* phi[0]) );
+    float terme_1 = 0.5* rho* pow(norm_vel_relative,2)* volume(0);
+    float terme_2 = (pow(delta,3)/pow(1+pow(delta,3),2));
+    float terme_3 = ((1+pow(delta,3))- (1-pow(X,2))* (phi[1]+ pow(delta,3)* phi[0]));
+    System.out.println("\tTerme 1 = "+terme_1);
+    System.out.println("\tTerme 2 = "+terme_2);
+    System.out.println("\tTerme 3 = "+terme_3);
     //EQ5
     // coeff de separation de volume
     float C_sep = (E_stretch - E_surface - E_dissip) / (E_stretch + E_surface + E_dissip);
+    
+    // DEBUG
+    if ( true ) {
+      System.out.println("==========================================");
+      System.out.println("tau = "+tau);
+      System.out.println("delta = "+delta);
+      System.out.println("delta3 = "+pow(delta,3));
+      System.out.println("sigma = "+sigma);
+      System.out.println("Vi = "+volume(0));
+      System.out.println("Ri = "+particles.radius.get(0));
+      System.out.println("PhiI = "+phi[0]);
+      System.out.println("PhiJ = "+phi[1]);    
+      System.out.println("rho = "+rho);  
+      System.out.println("||uij|| = "+norm_vel_relative);
+      System.out.println("X = "+X);
+      System.out.println("------------------------------");
+      System.out.println("E_surface = "+E_surface);
+      System.out.println("E_stretch = "+E_stretch);
+      System.out.println("E_dissip = "+E_dissip);
+      System.out.println("C_sep = "+C_sep);
+      System.out.println("==========================================");
+    }
+    
     
     // Stretching separation
     //EQ4

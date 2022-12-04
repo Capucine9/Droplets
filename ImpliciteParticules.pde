@@ -7,26 +7,49 @@ class ImpliciteParticles {
   //float [] radius = {100, 100}; //TODO : r[0]>=r[1]
 
 
-  float tailleZ = width-radius.get(0);
-  float posX1 = radius.get(0);
-  float posX2 = width-radius.get(1);
+  float tailleZ;
+  float posX1;
+  float posX2;
   float posY = height/2;
-  float diff_hauteur = 50;
+  float diff_hauteur = 10;
 
 
   /**
    * Creation des spheres
    **/
   ImpliciteParticles() {
+    radius.add(6.0);
+    radius.add(6.0);
+    // Initialisation de variables
+    tailleZ = width-radius.get(0);
+    posX1 = radius.get(0);
+    posX2 = width-radius.get(1);
+    
     // creation de la gouttelle de gauche
     points.add(new PVector(posX1, posY, tailleZ/2));
     //dirs.add(new PVector(1, 0, 0));
     velocity.add( new PVector(4, 0, 0));
     
     // creation de la gouttelle de droite
-    points.add(new PVector(posX2, posY + diff_hauteur, tailleZ/2));
+    points.add(new PVector(posX2, posY - diff_hauteur, tailleZ/2));
     //dirs.add(new PVector(-1, 0, 0));
     velocity.add( new PVector(-4, 0, 0));
+  }
+  
+  
+  /**
+   * Creer une nouvelle particule dans la liste "point" pour afficher une boule supplémentaire
+   * dans le rendu. Les listes velocity et radius doivent contenir les nouvelles valeur pour la
+   * nouvelle boule qui sera ajouté.
+   **/
+  void printMissingParticles () {
+    // Si velocity et radius ne possède pas les données pour la nouvelle boule à ajouter
+    if ( velocity.size() <= points.size() && radius.size() <= points.size() ) {
+      System.err.println("printMissingParticles() : Les listes Velocity ou Radius ne possèdent pas les informations pour créer une nouvelles boule");
+    }else{
+      points.add(new PVector(points.get(0).x, points.get(0).y-10, points.get(0).z)); 
+      N ++;
+    }
   }
   
 
@@ -48,7 +71,7 @@ class ImpliciteParticles {
     PVector n = new PVector(i, j, k);
     float v = 0;
     for (int r=0; r<N; r++){
-      v += f(points.get(r).dist(n)/radius.get(r));
+      v += f(points.get(r).dist(n)/(radius.get(r)*10));
     }
     return v;
   }

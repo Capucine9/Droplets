@@ -1,5 +1,5 @@
 final int rez = 50; //resolution  %TODO%
-final int N = 2; //nombres particules
+int N = 2; //nombres particules
 final int REC_INTERP = 5; //nombre d'appels recurcif 
 
 float [][][] field;
