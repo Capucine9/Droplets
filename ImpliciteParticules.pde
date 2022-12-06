@@ -6,20 +6,19 @@ class ImpliciteParticles {
   ArrayList<Float> radius = new ArrayList<Float>();
   //float [] radius = {100, 100}; //TODO : r[0]>=r[1]
 
-
   float tailleZ;
   float posX1;
   float posX2;
   float posY = height/2;
   float diff_hauteur = 10;
-
+  float zoom = 10;
 
   /**
    * Creation des spheres
    **/
   ImpliciteParticles() {
     radius.add(6.0);
-    radius.add(6.0);
+    radius.add(1.0);
     // Initialisation de variables
     tailleZ = width-radius.get(0);
     posX1 = radius.get(0);
@@ -28,12 +27,12 @@ class ImpliciteParticles {
     // creation de la gouttelle de gauche
     points.add(new PVector(posX1, posY, tailleZ/2));
     //dirs.add(new PVector(1, 0, 0));
-    velocity.add( new PVector(4, 0, 0));
+    velocity.add( new PVector(6, 0, 0));
    
     // creation de la gouttelle de droite
     points.add(new PVector(posX2, posY - diff_hauteur, tailleZ/2));
     //dirs.add(new PVector(-1, 0, 0));
-    velocity.add( new PVector(-4, 0, 0));
+    velocity.add( new PVector(-8, 0, 0));
     
     /** Stretch
       Radius = 6
@@ -92,7 +91,7 @@ class ImpliciteParticles {
     PVector n = new PVector(i, j, k);
     float v = 0;
     for (int r=0; r<N; r++){
-      v += f(points.get(r).dist(n)/(radius.get(r)*10));
+      v += f(points.get(r).dist(n)/(radius.get(r)*zoom));
     }
     return v;
   }

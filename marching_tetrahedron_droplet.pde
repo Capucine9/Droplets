@@ -1,6 +1,10 @@
-final int rez = 50; //resolution  %TODO%
+final int rez = 10; //resolution  %TODO%
 int N = 2; //nombres particules
 final int REC_INTERP = 5; //nombre d'appels recurcif 
+int minimumY;
+int maximumY;
+int minimumZ;
+int maximumZ;
 
 float [][][] field;
 int cols, rows, layers;
@@ -48,10 +52,15 @@ void poly(PVector v1, PVector v2, PVector v3, PVector v4) {
 
 void frameMarching() {
   
+  minimumY = (int)min(particles.points.get(1).y-(particles.radius.get(1)+1)*particles.zoom,particles.points.get(0).y-(particles.radius.get(0)+1)*particles.zoom);
+  maximumY = (int)max(particles.points.get(1).y+(particles.radius.get(1)+particles.zoom)*particles.zoom,particles.points.get(0).y+(particles.radius.get(0)+particles.zoom)*particles.zoom);
+  minimumZ = (int)min(particles.points.get(1).z-(particles.radius.get(1)+1)*particles.zoom,particles.points.get(0).z-(particles.radius.get(0)+1)*particles.zoom);
+  maximumZ = (int)max(particles.points.get(1).z+(particles.radius.get(1)+1)*particles.zoom,particles.points.get(0).z+(particles.radius.get(0)+1)*particles.zoom);
+  
   //parcours de l'affichage
   for (int i = 0; i < cols-1; i++) {
-    for (int j = 0; j < rows-1; j++) {
-      for (int k = 0; k < layers-1; k++){
+    for (int j = minimumY/rez; j < maximumY/rez; j++) {
+      for (int k = minimumZ/rez; k <= maximumZ/rez; k++){
         float x = i * rez;
         float y = j * rez;
         float z = k * rez;
