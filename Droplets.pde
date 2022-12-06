@@ -106,8 +106,12 @@ float r_sat; // rayon des satellites 1.89*r_bu
 
 
 */
+// import 3D camera handler package (PeasyCam)
+import peasy.*;
 
 
+// camera
+PeasyCam cam;
 
 IHM ihm;
 
@@ -127,7 +131,14 @@ void setup() {
   initMarching();
   resolv = new Resolving_interaction();
   resolv.init();
-  resolv.calcul_We();
+  //resolv.calcul_We();
+
+  // init the camera 
+  cam = new PeasyCam(this, width/2, height/2, 0, 900);
+  cam.setMinimumDistance(50);        // the power of the zoom
+  cam.setMaximumDistance(3000);      // the power of the dezoom
+  cam.setYawRotationMode();          // allow rotation only on the axe y
+
   
   if ( particles.radius.get(0)+particles.radius.get(1) <= particles.diff_hauteur)
     System.out.println("No collision");

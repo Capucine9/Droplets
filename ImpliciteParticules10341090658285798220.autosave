@@ -29,17 +29,11 @@ class ImpliciteParticles {
     points.add(new PVector(posX1, posY, tailleZ/2));
     //dirs.add(new PVector(1, 0, 0));
     velocity.add( new PVector(4, 0, 0));
-   
+    
     // creation de la gouttelle de droite
     points.add(new PVector(posX2, posY - diff_hauteur, tailleZ/2));
     //dirs.add(new PVector(-1, 0, 0));
     velocity.add( new PVector(-4, 0, 0));
-    
-    /** Stretch
-      Radius = 6
-      Diff_h = 10
-      Vitesse = 4 / -4
-     */
   }
   
   
@@ -49,23 +43,13 @@ class ImpliciteParticles {
    * nouvelle boule qui sera ajouté.
    **/
   void printMissingParticles () {
-      System.out.println("N = "+N);
-      System.out.println("Nb points = "+points.size());
-      System.out.println("Nb velocity = "+velocity.size());
-      System.out.println("Nb radius = "+radius.size());
-
     // Si velocity et radius ne possède pas les données pour la nouvelle boule à ajouter
     if ( velocity.size() <= points.size() && radius.size() <= points.size() ) {
       System.err.println("printMissingParticles() : Les listes Velocity ou Radius ne possèdent pas les informations pour créer une nouvelles boule");
     }else{
-      points.add(new PVector(points.get(0).x, points.get(0).y-100, points.get(0).z)); 
+      points.add(new PVector(points.get(0).x, points.get(0).y-10, points.get(0).z)); 
       N ++;
     }
-    
-    System.out.println("N = "+N);
-    System.out.println("Nb points = "+points.size());
-    System.out.println("Nb velocity = "+velocity.size());
-    System.out.println("Nb radius = "+radius.size());
   }
   
 
@@ -74,10 +58,8 @@ class ImpliciteParticles {
    **/
   void nextStep() {
     for (int i = 0; i < N; i++) {
-      if ( i < N ) {
-        PVector p = points.get(i);
-        p.add(velocity.get(i));
-      }
+      PVector p = points.get(i);
+      p.add(velocity.get(i));
     }
   }
 

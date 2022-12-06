@@ -126,8 +126,9 @@ class Resolving_interaction{
     
     // Stretching separation
     else if (We > We_stretch){
+
       System.out.println("Stretching separation");
-      stretching_separation();} //TODO : PROBLEME LIGNE D'AVANT
+      stretching_separation();}
     
     // Coalescence
     else {
@@ -142,7 +143,7 @@ class Resolving_interaction{
   // Reflexive separation
   void reflexive_separation(){
     // mise à jour de la vitesse des gouttelettes
-    Z = sqrt(1-We_reflex/We); 
+    Z = sqrt(1-(We_reflex/We)); 
     for (int i=0; i<2; i++){ 
       particles.velocity.get(i).x = calcul_velocity(i, particles.velocity.get(i).x, particles.velocity.get(1-i).x);
       particles.velocity.get(i).y = calcul_velocity(i, particles.velocity.get(i).y, particles.velocity.get(1-i).y);
@@ -186,12 +187,20 @@ class Resolving_interaction{
   void stretching_separation(){
     // mise à jour de la vitesse des gouttelettes
     Z = (X-sqrt((2.4*f_delta)/We)) / (1-sqrt((2.4*f_delta)/We));
+    System.out.println("Vitesse 1 : "+particles.velocity.get(0));
+    System.out.println("Vitesse 2 : "+particles.velocity.get(1));
+    System.out.println("Z = "+Z);
     for (int i=0; i<2; i++){ 
       particles.velocity.get(i).x = calcul_velocity(i, particles.velocity.get(i).x, particles.velocity.get(1-i).x);
       particles.velocity.get(i).y = calcul_velocity(i, particles.velocity.get(i).y, particles.velocity.get(1-i).y);
       particles.velocity.get(i).z = calcul_velocity(i, particles.velocity.get(i).z, particles.velocity.get(1-i).z);
+      
     }
-    V_lig = V_ligament(); 
+    V_lig = V_ligament();
+    particles.velocity.get(0).x = particles.velocity.get(0).x * -1;
+    
+    System.out.println("Vitesse 1 : "+particles.velocity.get(0));
+    System.out.println("Vitesse 2 : "+particles.velocity.get(1));
     
     if (V_lig > 0){
       // EQ8 r_sat 
@@ -214,9 +223,11 @@ class Resolving_interaction{
       
       // rayon des satellites
       radius_sat = 1.89 * radius_bu;
+      System.out.println("radius_sat = "+radius_sat);
       particles.radius.add(radius_sat);
       // nombre de satellites par conservation de masse
       float volume_sat = volume(2);
+      System.out.println("volume_sat = "+volume(2));
       n_sat = V_lig/volume_sat;
       
       // presence de satellites
@@ -246,15 +257,19 @@ class Resolving_interaction{
       } else {
         particles.radius.remove(2);
       }
-      
       particles.printMissingParticles();
     }
     
-    System.out.println(V_lig);
+    System.out.println("Vi = "+volume(0));
+    System.out.println("Vj = "+volume(1));
+    System.out.println("V_lig = "+V_lig);
   }
   
   // Coalescence
   void coalescence(){
+    
+    System.out.println("Vitesse 1 : "+particles.velocity.get(0));
+    System.out.println("Vitesse 2 : "+particles.velocity.get(1));
     //calcul du nouveau volume
     float new_volume = volume(0) + volume(1);
     //mise a jour de la vitesse (conservation de la quantité de mouvement [energie cinetique])
@@ -268,6 +283,9 @@ class Resolving_interaction{
     // mise a jour du rayon (conservation de masse)
     particles.radius.set(0, new_radius(new_volume));
     particles.radius.set(1, 0.0);
+    
+    System.out.println("Vitesse 1 : "+particles.velocity.get(0));
+    System.out.println("Vitesse 2 : "+particles.velocity.get(1));
   }
   
   
@@ -329,7 +347,7 @@ class Resolving_interaction{
     return r_bu;
   }
   
-  // Actualisation de la velocite des gouttelettes
+  // Actualisation de la velocite des gouttelettes lorsque les deux goutellettes rentrent en collision (hors coalescence)
   //EQ3
   float calcul_velocity(int k, float vel_k, float vel_l){
     return (pow(particles.radius.get(k),3)*vel_k + pow(particles.radius.get(1-k),3)*vel_l - pow(particles.radius.get(1-k),3)*(vel_k-vel_l)*Z) / (pow(particles.radius.get(k),3)+pow(particles.radius.get(1-k),3));
@@ -346,7 +364,7 @@ class Resolving_interaction{
   
   // rayon a partir dun volume
   float new_radius(float V){
-    return pow(((V/PI)*3/4),0.33333333); //TODO : RACINE CUBIQUE..... AVEC TEST (pow(27,0.33333333)) CELA DONNE 3.0
+    return pow(((V/PI)*0.75),0.33333333); //TODO : RACINE CUBIQUE..... AVEC TEST (pow(27,0.33333333)) CELA DONNE 3.0
   }
   
   // calcul de phi 
@@ -385,15 +403,15 @@ class Resolving_interaction{
     float terme_1 = 0.5* rho* pow(norm_vel_relative,2)* volume(0);
     float terme_2 = (pow(delta,3)/pow(1+pow(delta,3),2));
     float terme_3 = ((1+pow(delta,3))- (1-pow(X,2))* (phi[1]+ pow(delta,3)* phi[0]));
-    System.out.println("\tTerme 1 = "+terme_1);
-    System.out.println("\tTerme 2 = "+terme_2);
-    System.out.println("\tTerme 3 = "+terme_3);
+    // System.out.println("\tTerme 1 = "+terme_1);
+    // System.out.println("\tTerme 2 = "+terme_2);
+    // System.out.println("\tTerme 3 = "+terme_3);
     //EQ5
     // coeff de separation de volume
     float C_sep = (E_stretch - E_surface - E_dissip) / (E_stretch + E_surface + E_dissip);
     
     // DEBUG
-    if ( true ) {
+    if ( false ) {
       System.out.println("==========================================");
       System.out.println("tau = "+tau);
       System.out.println("delta = "+delta);
