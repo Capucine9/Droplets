@@ -150,7 +150,9 @@ void draw() {
   
   translate(0, 0, -width/2);
   lights();
-  frameMarching();
+  //frameMarching();
+  frameSimpleSphere();
+  
   
   
   
@@ -196,4 +198,35 @@ void draw() {
   }
   
   
+}
+
+
+/**
+ * Affiche les goutes comme de simple sphères. Ne fonctionne que si les sphère ont une vitesse Y et Z nulle
+ **/
+void frameSimpleSphere () {
+  interactions = new Resolving_interaction();
+  particles.nextStep();
+  int zoom = 30;
+  for ( int i = 0; i < N; i++ ) {
+    // Move the droplet n°1
+    if ( i == 1 ) {
+      translate(particles.points.get(i).x, particles.points.get(0).y-particles.diff_hauteur*zoom, 0);
+      sphere(particles.radius.get(i)*zoom);
+      translate(-particles.points.get(i).x, -(particles.points.get(0).y-particles.diff_hauteur*zoom), 0);
+
+    // Move the satelites droplets
+    }else if ( i >= 2 ) {
+      float decalage = particles.points.get(0).y-(particles.diff_hauteur*(zoom/2));
+      translate(particles.points.get(i).x, decalage, 0);
+      sphere(particles.radius.get(i)*zoom);
+      translate(-particles.points.get(i).x, -decalage, 0);
+
+    // Don't move the droplet n°0
+    }else{
+      translate(particles.points.get(i).x, particles.points.get(i).y, 0);
+      sphere(particles.radius.get(i)*zoom);
+      translate(-particles.points.get(i).x, -particles.points.get(i).y, 0);
+    }
+  }
 }

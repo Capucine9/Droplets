@@ -54,13 +54,16 @@ class ImpliciteParticles {
       System.out.println("Nb velocity = "+velocity.size());
       System.out.println("Nb radius = "+radius.size());
 
-    // Si velocity et radius ne possède pas les données pour la nouvelle boule à ajouter
-    if ( velocity.size() <= points.size() && radius.size() <= points.size() ) {
-      System.err.println("printMissingParticles() : Les listes Velocity ou Radius ne possèdent pas les informations pour créer une nouvelles boule");
-    }else{
-      points.add(new PVector(points.get(0).x, points.get(0).y-100, points.get(0).z)); 
-      N ++;
+    for ( int i = 2; i < velocity.size(); i++ ) {
+      // Si velocity et radius ne possède pas les données pour la nouvelle boule à ajouter
+      if ( velocity.size() <= points.size() && radius.size() <= points.size() ) {
+        System.err.println("printMissingParticles() : Les listes Velocity ou Radius ne possèdent pas les informations pour créer une nouvelles boule");
+      }else{
+        points.add(new PVector(points.get(0).x, points.get(0).y, points.get(0).z)); 
+        N ++;
+      }
     }
+    
     
     System.out.println("N = "+N);
     System.out.println("Nb points = "+points.size());
