@@ -20,9 +20,9 @@ void initMarching() {
   //size(1280, 720, P3D);
   particles = new ImpliciteParticles();
   cols = 1 + width / rez;
-  rows = 1 + height / rez;
-  layers = 1 + width / rez;
-  field = new float[cols][rows][layers];
+  //rows = 1 + height / rez;
+  //layers = 1 + width / rez;
+  //field = new float[cols][rows][layers];
 }
 
 

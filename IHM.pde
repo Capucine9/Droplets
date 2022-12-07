@@ -29,7 +29,7 @@ class IHM {
   int L_diameter_selected = 0;
   int R_diameter_selected = 0;
   
-  float[] velocity = {0.25, 0.5, 0.75, 1, 1.25, 1.5, 2};
+  float[] velocity = {0.25, 0.5, 0.75, 1, 1.25, 1.5, 2, 3, 4, 6, 10, 15, 20};
   int L_velocity_selected = 0;
   int R_velocity_selected = 0;
   

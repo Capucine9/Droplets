@@ -120,19 +120,19 @@ class Resolving_interaction{
                   
     // Reflexive separation
     if (We > We_reflex && We_reflex > 0 ){
-      System.out.println("Reflexive separation");
+      System.err.println("Reflexive separation");
       reflexive_separation();
     }
     
     // Stretching separation
     else if (We > We_stretch){
 
-      System.out.println("Stretching separation");
+      System.err.println("Stretching separation");
       stretching_separation();}
     
     // Coalescence
     else {
-      System.out.println("Coalescence");
+      System.err.println("Coalescence");
       coalescence();}
   }
   
@@ -231,7 +231,8 @@ class Resolving_interaction{
       n_sat = V_lig/volume_sat;
       
       // presence de satellites
-      if ( n_sat > 0) {
+      System.out.println("test = "+n_sat+" "+(n_sat >= 1));
+      if ( n_sat >= 1 ) {
         System.out.println("n_sat = "+n_sat);
         
         System.out.println("rad = "+particles.radius.size());

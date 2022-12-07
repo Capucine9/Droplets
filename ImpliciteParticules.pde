@@ -10,14 +10,14 @@ class ImpliciteParticles {
   float posX1;
   float posX2;
   float posY = height/2;
-  float diff_hauteur = 10;
-  float zoom = 10;
+  float diff_hauteur = 0.8;
+  float zoom = 80;
 
   /**
    * Creation des spheres
    **/
   ImpliciteParticles() {
-    radius.add(6.0);
+    radius.add(1.0);
     radius.add(1.0);
     // Initialisation de variables
     tailleZ = width-radius.get(0);
@@ -27,12 +27,12 @@ class ImpliciteParticles {
     // creation de la gouttelle de gauche
     points.add(new PVector(posX1, posY, tailleZ/2));
     //dirs.add(new PVector(1, 0, 0));
-    velocity.add( new PVector(6, 0, 0));
+    velocity.add( new PVector(20, 0, 0));
    
     // creation de la gouttelle de droite
     points.add(new PVector(posX2, posY - diff_hauteur, tailleZ/2));
     //dirs.add(new PVector(-1, 0, 0));
-    velocity.add( new PVector(-8, 0, 0));
+    velocity.add( new PVector(-20, 0, 0));
     
     /** Stretch
       Radius = 6
@@ -101,7 +101,7 @@ class ImpliciteParticles {
    * Evaluation es sommets (0 ou 1)
    **/
   int evalInt(float i, float j, float k) {
-    return (eval(i, j, k) >= 0.00001) ? 1 : 0;
+    return (eval(i, j, k) >= 0.1) ? 1 : 0;
   }
   
 

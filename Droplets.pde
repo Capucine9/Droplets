@@ -120,24 +120,25 @@ Resolving_interaction resolv;
 boolean collision = false;
 
 void settings() {
-  size((int)(1280*1.3),(int)(720*1.3), P3D);
+  size((int)(1280*1),(int)(720*1), P3D);
 }
 
 
 
 void setup() {
   
+  // init the camera 
+  //cam = new PeasyCam(this, width/2, height/2, 0, 900);
+  //cam.setMinimumDistance(50);        // the power of the zoom
+  //cam.setMaximumDistance(3000);      // the power of the dezoom
+  //cam.setYawRotationMode();          // allow rotation only on the axe y
+  
+  
   ihm = new IHM(this);
   initMarching();
   resolv = new Resolving_interaction();
   resolv.init();
   //resolv.calcul_We();
-
-  // init the camera 
-  cam = new PeasyCam(this, width/2, height/2, 0, 900);
-  cam.setMinimumDistance(50);        // the power of the zoom
-  cam.setMaximumDistance(3000);      // the power of the dezoom
-  cam.setYawRotationMode();          // allow rotation only on the axe y
 
   
   if ( particles.radius.get(0)+particles.radius.get(1) <= particles.diff_hauteur)
@@ -150,9 +151,8 @@ void draw() {
   
   translate(0, 0, -width/2);
   lights();
-  //frameMarching();
-  frameSimpleSphere();
-  
+  frameMarching();
+  //frameSimpleSphere();
   
   
   
@@ -160,26 +160,35 @@ void draw() {
   translate(0, 0, width/2);
   ihm.printInterface();
   
-  
+  boolean diff = false;
   // get distance
-  int variable = Integer.parseInt(""+ihm.distance.getItem((int)ihm.distance.getValue()).get("text"));
-  //System.out.println(variable);
+  int distance_selected = Integer.parseInt(""+ihm.distance.getItem((int)ihm.distance.getValue()).get("text"));
   // get speed
-  float variable2 = Float.parseFloat(""+ihm.speed_ddl.getItem((int)ihm.speed_ddl.getValue()).get("text"));
+  float speed_selected = Float.parseFloat(""+ihm.speed_ddl.getItem((int)ihm.speed_ddl.getValue()).get("text"));
   //System.out.println(variable2);
   // get size Ball 1
-  variable2 = Float.parseFloat(""+ihm.L_diameter.getItem((int)ihm.L_diameter.getValue()).get("text"));
+  float size_1_selected = Float.parseFloat(""+ihm.L_diameter.getItem((int)ihm.L_diameter.getValue()).get("text"));
   //System.out.println(variable2);
   // get speed Ball 1
-  variable2 = Float.parseFloat(""+ihm.L_velocity.getItem((int)ihm.L_velocity.getValue()).get("text"));
+  //particles.velocity.set(0, new PVector(Float.parseFloat(""+ihm.L_velocity.getItem((int)ihm.L_velocity.getValue()).get("text")),0,0));
   //System.out.println(variable2);
   // get size Ball 2
-  variable2 = Float.parseFloat(""+ihm.R_diameter.getItem((int)ihm.R_diameter.getValue()).get("text"));
+  float variable2 = Float.parseFloat(""+ihm.R_diameter.getItem((int)ihm.R_diameter.getValue()).get("text"));
   //System.out.println(variable2);
   // get speed Ball 2
-  variable2 = Float.parseFloat(""+ihm.R_velocity.getItem((int)ihm.R_velocity.getValue()).get("text"));
+  //particles.velocity.set(1, new PVector(-Float.parseFloat(""+ihm.R_velocity.getItem((int)ihm.R_velocity.getValue()).get("text")),0,0));
   //System.out.println(variable2);
   
+  //System.out.println(variable+" "+particles.diff_hauteur);
+  //if ( distance_selected != particles.diff_hauteur ) {
+  //  initMarching();
+  //  resolv = new Resolving_interaction();
+  //  resolv.init(); 
+  //}
+  
+  
+  //particles.diff_hauteur = distance_selected;
+    
   // Structure (keys) of DropdownList.getItem()
   // view
   // color
