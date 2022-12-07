@@ -151,8 +151,8 @@ void draw() {
   
   translate(0, 0, -width/2);
   lights();
-  frameMarching();
-  //frameSimpleSphere();
+  //frameMarching();
+  frameSimpleSphere();
   
   
   
@@ -217,6 +217,9 @@ void frameSimpleSphere () {
   interactions = new Resolving_interaction();
   particles.nextStep();
   int zoom = 30;
+  float decalage_y = particles.diff_hauteur/(particles.velocity.size()-2);
+  float y = decalage_y;
+    
   for ( int i = 0; i < N; i++ ) {
     // Move the droplet n°1
     if ( i == 1 ) {
@@ -226,10 +229,11 @@ void frameSimpleSphere () {
 
     // Move the satelites droplets
     }else if ( i >= 2 ) {
-      float decalage = particles.points.get(0).y-(particles.diff_hauteur*(zoom/2));
-      translate(particles.points.get(i).x, decalage, 0);
+      //float decalage = particles.points.get(0).y-(particles.diff_hauteur*(zoom/2));
+      translate(particles.points.get(i).x,  particles.points.get(0).y + y*zoom, 0);
       sphere(particles.radius.get(i)*zoom);
-      translate(-particles.points.get(i).x, -decalage, 0);
+      translate(-particles.points.get(i).x, -(particles.points.get(0).y + y*zoom), 0);
+      y += decalage_y;
 
     // Don't move the droplet n°0
     }else{
