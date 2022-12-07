@@ -245,6 +245,8 @@ class Resolving_interaction{
         for (int i=1; i<=n_sat; i++){
           particles.velocity.add(velocity_sat(i));
         }
+        System.out.println("velocity sat2 = "+particles.velocity.get(2));
+        System.out.println("velocity sat3 = "+particles.velocity.get(3));
         
         //calcul des rayons des gouttelettes par conservation de masse
         for (int i=0; i<2; i++){
@@ -382,9 +384,12 @@ class Resolving_interaction{
   // calcul de la vitesse des satellites avec n le numero du sat dont on calcul la vitesse et nsat le nbr totale de sat
   //EQ9
   PVector velocity_sat(int n){
-    float velx = v_interact(0)/V_lig * particles.velocity.get(0).x + v_interact(1)/V_lig * (particles.velocity.get(1).x+(1-2*n/(n_sat+1))*vel_relative(particles.velocity).x);
+    float velx = (v_interact(0)/V_lig) * particles.velocity.get(0).x + (v_interact(1)/V_lig) * (particles.velocity.get(1).x+(1-(2*n/(n_sat+1)))*vel_relative(particles.velocity).x);
     float vely = v_interact(0)/V_lig * particles.velocity.get(0).y + v_interact(1)/V_lig * (particles.velocity.get(1).y+(1-2*n/(n_sat+1))*vel_relative(particles.velocity).y);
     float velz = v_interact(0)/V_lig * particles.velocity.get(0).z + v_interact(1)/V_lig * (particles.velocity.get(1).z+(1-2*n/(n_sat+1))*vel_relative(particles.velocity).z);
+    System.out.println("v_interact(0)" + v_interact(0));
+    System.out.println("v_interact(1)" + v_interact(1));
+    System.out.println("vel_relative(particles.velocity).x" + vel_relative(particles.velocity).x);
     return new PVector(velx, vely, velz);
   }
   
