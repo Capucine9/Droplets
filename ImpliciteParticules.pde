@@ -6,12 +6,17 @@ class ImpliciteParticles {
   ArrayList<Float> radius = new ArrayList<Float>();
   //float [] radius = {100, 100}; //TODO : r[0]>=r[1]
 
+  int minimumY;
+  int maximumY;
+  int minimumZ;
+  int maximumZ;
   float tailleZ;
   float posX1;
   float posX2;
   float posY = height/2;
-  float diff_hauteur = 0.8;
+  float diff_hauteur = 0.9;
   float zoom = 80;
+  
 
   /**
    * Creation des spheres
@@ -39,6 +44,8 @@ class ImpliciteParticles {
       Diff_h = 10
       Vitesse = 4 / -4
      */
+    minimumY = (int)min(points.get(1).y-(radius.get(1)+1)*zoom, points.get(0).y-(radius.get(0)+1)*zoom);
+    maximumY = (int)max(points.get(1).y+(radius.get(1)+1)*zoom, points.get(0).y+(radius.get(0)+1)*zoom);  
   }
   
   

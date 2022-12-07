@@ -165,7 +165,7 @@ class IHM {
     // ======================================================================================
     // Left dorplet
     // ======================================================================================
-    text("Goute Gauche", margeLeft, level_side);
+    text("Goutte Gauche", margeLeft, level_side);
     text("Diametre (cm) :", margeLeft, level_diameter_velocity);
     text("Vitesse (m/s) :", margeLeft+200, level_diameter_velocity);
     
@@ -174,7 +174,7 @@ class IHM {
     // ======================================================================================
     // Right dorplet
     // ======================================================================================
-    text("Goute Droite", width-150, level_side);
+    text("Goutte Droite", width-150, level_side);
     text("Diametre (cm) :", width-360, level_diameter_velocity);
     text("Vitesse (m/s) :", width-160, level_diameter_velocity);
     
