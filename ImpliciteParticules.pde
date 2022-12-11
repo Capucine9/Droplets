@@ -13,39 +13,41 @@ class ImpliciteParticles {
   float tailleZ;
   float posX1;
   float posX2;
-  float posY = height/2;
-  float diff_hauteur = 0.9;
-  float zoom = 80;
+  float posY = 0;
+  float diff_hauteur = 10;
+  float zoom = 20;
+  int espace_begin = 300;
   
 
   /**
    * Creation des spheres
    **/
   ImpliciteParticles() {
-    radius.add(1.0);
-    radius.add(1.0);
+    radius.add(6.0);
+    radius.add(6.0);
     // Initialisation de variables
     tailleZ = width-radius.get(0);
-    posX1 = radius.get(0);
-    posX2 = width-radius.get(1);
+    posX1 = 0- espace_begin;
+    posX2 = 0+ espace_begin;
     
     // creation de la gouttelle de gauche
-    points.add(new PVector(posX1, posY, tailleZ/2));
+    points.add(new PVector(posX1, posY+diff_hauteur*0.5, tailleZ/2));
     //dirs.add(new PVector(1, 0, 0));
-    velocity.add( new PVector(20, 0, 0));
+    velocity.add( new PVector(4, 0, 0));
    
     // creation de la gouttelle de droite
-    points.add(new PVector(posX2, posY - diff_hauteur, tailleZ/2));
+    points.add(new PVector(posX2, posY - diff_hauteur*0.5, tailleZ/2));
     //dirs.add(new PVector(-1, 0, 0));
-    velocity.add( new PVector(-20, 0, 0));
+    velocity.add( new PVector(-4, 0, 0));
     
     /** Stretch
       Radius = 6
       Diff_h = 10
       Vitesse = 4 / -4
      */
-    minimumY = (int)min(points.get(1).y-(radius.get(1)+1)*zoom, points.get(0).y-(radius.get(0)+1)*zoom);
-    maximumY = (int)max(points.get(1).y+(radius.get(1)+1)*zoom, points.get(0).y+(radius.get(0)+1)*zoom);  
+
+    // minimumY = (int)min(points.get(1).y-(radius.get(1)+1)*zoom, points.get(0).y-(radius.get(0)+1)*zoom);
+    // maximumY = (int)max(points.get(1).y+(radius.get(1)+1)*zoom, points.get(0).y+(radius.get(0)+1)*zoom);  
   }
   
   
@@ -55,17 +57,21 @@ class ImpliciteParticles {
    * nouvelle boule qui sera ajouté.
    **/
   void printMissingParticles () {
-      System.out.println("N = "+N);
-      System.out.println("Nb points = "+points.size());
-      System.out.println("Nb velocity = "+velocity.size());
-      System.out.println("Nb radius = "+radius.size());
+    System.out.println("N = "+N);
+    System.out.println("Nb points = "+points.size());
+    System.out.println("Nb velocity = "+velocity.size());
+    System.out.println("Nb radius = "+radius.size());
+
+    float decalage_y = particles.diff_hauteur/(particles.velocity.size()-2);
+    float y = decalage_y;
 
     for ( int i = 2; i < velocity.size(); i++ ) {
       // Si velocity et radius ne possède pas les données pour la nouvelle boule à ajouter
       if ( velocity.size() <= points.size() && radius.size() <= points.size() ) {
-        System.err.println("printMissingParticles() : Les listes Velocity ou Radius ne possèdent pas les informations pour créer une nouvelles boule");
+        System.err.println("printMissingParticles() : Les listes Velocity ou Radius ne possèdent pas les informations pour créer une nouvelles goutte");
       }else{
-        points.add(new PVector(points.get(0).x, points.get(0).y, points.get(0).z)); 
+        points.add(new PVector(points.get(0).x, particles.points.get(1).y + y, points.get(0).z)); 
+        y += decalage_y;
         N ++;
       }
     }
@@ -88,6 +94,18 @@ class ImpliciteParticles {
         p.add(velocity.get(i));
       }
     }
+
+    // to have the origin at the center of the screen
+    translate(width/2, height/2, 0);
+
+    for ( int i = 0; i < N; i++ ) {
+      translate(particles.points.get(i).x, particles.points.get(i).y*zoom, 0);
+      sphere(particles.radius.get(i)*zoom);
+      translate(-particles.points.get(i).x, -particles.points.get(i).y*zoom, 0);
+    }
+    
+    translate(-width/2, -height/2, 0);
+
   }
 
   

@@ -214,32 +214,31 @@ void draw() {
  * Affiche les goutes comme de simple sphères. Ne fonctionne que si les sphère ont une vitesse Y et Z nulle
  **/
 void frameSimpleSphere () {
-  interactions = new Resolving_interaction();
   particles.nextStep();
-  int zoom = 30;
-  float decalage_y = particles.diff_hauteur/(particles.velocity.size()-2);
-  float y = decalage_y;
+  // int zoom = 30;
+  // float decalage_y = particles.diff_hauteur/(particles.velocity.size()-2);
+  // float y = decalage_y;
     
-  for ( int i = 0; i < N; i++ ) {
-    // Move the droplet n°1
-    if ( i == 1 ) {
-      translate(particles.points.get(i).x, particles.points.get(0).y-particles.diff_hauteur*zoom, 0);
-      sphere(particles.radius.get(i)*zoom);
-      translate(-particles.points.get(i).x, -(particles.points.get(0).y-particles.diff_hauteur*zoom), 0);
+  // for ( int i = 0; i < N; i++ ) {
+  //   // Move the droplet n°1
+  //   if ( i == 1 ) {
+  //     translate(particles.points.get(i).x, particles.points.get(0).y-particles.diff_hauteur*zoom, 0);
+  //     sphere(particles.radius.get(i)*zoom);
+  //     translate(-particles.points.get(i).x, -(particles.points.get(0).y-particles.diff_hauteur*zoom), 0);
 
-    // Move the satelites droplets
-    }else if ( i >= 2 ) {
-      //float decalage = particles.points.get(0).y-(particles.diff_hauteur*(zoom/2));
-      translate(particles.points.get(i).x,  particles.points.get(0).y + y*zoom, 0);
-      sphere(particles.radius.get(i)*zoom);
-      translate(-particles.points.get(i).x, -(particles.points.get(0).y + y*zoom), 0);
-      y += decalage_y;
+  //   // Move the satelites droplets
+  //   }else if ( i >= 2 ) {
+  //     //float decalage = particles.points.get(0).y-(particles.diff_hauteur*(zoom/2));
+  //     translate(particles.points.get(i).x,  particles.points.get(0).y + y*zoom, 0);
+  //     sphere(particles.radius.get(i)*zoom);
+  //     translate(-particles.points.get(i).x, -(particles.points.get(0).y + y*zoom), 0);
+  //     y += decalage_y;
 
-    // Don't move the droplet n°0
-    }else{
-      translate(particles.points.get(i).x, particles.points.get(i).y, 0);
-      sphere(particles.radius.get(i)*zoom);
-      translate(-particles.points.get(i).x, -particles.points.get(i).y, 0);
-    }
-  }
+  //   // Don't move the droplet n°0
+  //   }else{
+  //     translate(particles.points.get(i).x, particles.points.get(i).y, 0);
+  //     sphere(particles.radius.get(i)*zoom);
+  //     translate(-particles.points.get(i).x, -particles.points.get(i).y, 0);
+  //   }
+  // }
 }

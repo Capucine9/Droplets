@@ -240,10 +240,12 @@ class Resolving_interaction{
         // rayon des satellites
         for (int i=1; i<=n_sat-1; i++){
           particles.radius.add(radius_sat);
+          //particles.radius.add(0.f);
         }
         //vitesse des satellites
         for (int i=1; i<=n_sat; i++){
           particles.velocity.add(velocity_sat(i));
+          //particles.velocity.add(new PVector(0,0,0));
         }
         System.out.println("velocity sat2 = "+particles.velocity.get(2));
         System.out.println("velocity sat3 = "+particles.velocity.get(3));
@@ -387,9 +389,9 @@ class Resolving_interaction{
     float velx = (v_interact(0)/V_lig) * particles.velocity.get(0).x + (v_interact(1)/V_lig) * (particles.velocity.get(1).x+(1-(2*n/(n_sat+1)))*vel_relative(particles.velocity).x);
     float vely = v_interact(0)/V_lig * particles.velocity.get(0).y + v_interact(1)/V_lig * (particles.velocity.get(1).y+(1-2*n/(n_sat+1))*vel_relative(particles.velocity).y);
     float velz = v_interact(0)/V_lig * particles.velocity.get(0).z + v_interact(1)/V_lig * (particles.velocity.get(1).z+(1-2*n/(n_sat+1))*vel_relative(particles.velocity).z);
-    System.out.println("v_interact(0)" + v_interact(0));
-    System.out.println("v_interact(1)" + v_interact(1));
-    System.out.println("vel_relative(particles.velocity).x" + vel_relative(particles.velocity).x);
+    //System.out.println("v_interact(0)" + v_interact(0));
+    //System.out.println("v_interact(1)" + v_interact(1));
+    System.out.println("vel_relative().x : "+ n+" -> "+ velx);
     return new PVector(velx, vely, velz);
   }
   
