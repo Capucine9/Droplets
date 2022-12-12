@@ -49,27 +49,27 @@ class Resolving_interaction{
     
     X = particles.diff_hauteur / (particles.radius.get(0) + particles.radius.get(1)); 
     
-    System.out.println("X = "+X);
+
     
-    System.out.println("Pos Y Gauche = "+particles.points.get(0).y);
-    System.out.println("Terme gauche = "+(particles.points.get(0).y-particles.radius.get(0)));
-    System.out.println("Pos Y Droite = "+particles.points.get(1).y);
-    System.out.println("Terme droite = "+(particles.points.get(1).y+particles.radius.get(1)));
-    System.out.println("Hauteur collision = "+hauteur_collision);
+
+
+
+
+
     
     for (int i=0; i<2; i++){
       phi[i] = volume_calotte(i, hauteur_collision)/volume(i);
     }
-    System.out.println("PhiI = "+phi[0]);
-    System.out.println("PhiJ = "+phi[1]);
+
+
     
     ksi = 0.5*X*(1+delta);
-    System.out.println("Ksi = "+ksi);
+
     
     eta_1 = 2*pow(1-ksi,2)*sqrt((1-pow(ksi,2)))-1;
     eta_2 = 2*pow(delta-ksi,2)*sqrt(pow(delta,2)-pow(ksi,2))-pow(delta,3);
-    System.out.println("Eta 1 = "+ eta_1);
-    System.out.println("Eta 2 = "+ eta_2);
+
+
     
 
     // calcul de la norme de la velocité relative
@@ -77,15 +77,21 @@ class Resolving_interaction{
     
     // Weber Number (rapport entre les forces d'inertie et les forces de tension superficielle)
     We = (2 * rho * particles.radius.get(1) * pow(norm_vel_relative,2)) / sigma;
+    System.out.println("rho = "+rho);
+    System.out.println("radius1 = "+particles.radius.get(1));
+    System.out.println("velo0 = "+particles.velocity.get(0));
+    System.out.println("velo1 = "+particles.velocity.get(1));
+    System.out.println("sigma = "+sigma);
+    System.out.println("velo relative = "+norm_vel_relative);
     
     //// Reflexive separation
     //EQ2
     float terme = (7*pow((1+pow(delta,3)),0.66666666))-4*(1+pow(delta,2));
     We_reflex = (3*terme*delta*pow((1+pow(delta,3)),2)) / (pow(delta,6)*eta_1+eta_2);
-    System.out.println("Terme = "+terme);
-    System.out.println("Numerateur = "+( 3*delta*pow((1+pow(delta,3)),2) ) );
-    System.out.println("Denominateur = "+( (pow(delta,6)*eta_1+eta_2) )  );
-    System.out.println("Somme eta = "+(eta_1+eta_2));
+
+
+
+
 
     //// Stretching separation
     //EQ1
@@ -96,16 +102,16 @@ class Resolving_interaction{
    double f2 = 1-X;
    double f3 = sqrt(pow(delta,3)*phi[1]+phi[0]);
    double s = (pow(delta,2)*((1+pow(delta,3))-(1-pow(X,2))*(phi[1]+pow(delta,3)*phi[0])));
-   System.out.println(f+" "+f1+" "+f2+" "+f3+" "+s);
+
    
     //// Instabilite des ligaments
     beta = 3/(4*sqrt(2))*(k_1*k_2);
     r_0 = hauteur_collision * 0.5;
     We_0 = 2* r_0 * (rho/sigma) * pow(norm_vel_relative,2); //avec r_0 rayon initial egal a longueur initiale du cylindre 
-    System.out.println("rho = "+rho);
-    System.out.println("sigma = "+sigma);
-    System.out.println("r_0 = "+r_0);
-    System.out.println("div = "+(rho/sigma));
+
+
+
+
     // determine le type de collision
     //calcul_We();
     
@@ -153,71 +159,21 @@ class Resolving_interaction{
   // Reflexive separation
   void reflexive_separation(){
     // mise à jour de la vitesse des gouttelettes
-    Z = sqrt(1-(We_reflex/We)); 
+    Z = sqrt(1-(We_reflex/We));
+    
     for (int i=0; i<2; i++){ 
       particles.velocity.get(i).x = calcul_velocity(i, particles.velocity.get(i).x, particles.velocity.get(1-i).x);
       particles.velocity.get(i).y = calcul_velocity(i, particles.velocity.get(i).y, particles.velocity.get(1-i).y);
       particles.velocity.get(i).z = calcul_velocity(i, particles.velocity.get(i).z, particles.velocity.get(1-i).z);
     }  
-    V_lig = V_ligament();
-    
-    if (V_lig > 0){
-      // TODO :
-      // EQ8 r_sat 
-      //radius_bu = equation_degre3(beta*sqrt(We_0), 1, 0, -1, r_0); choisir le bon parmis les 3
-      // rayon des satellites
-      radius_sat = 1.89 * radius_bu;
-      particles.radius.add(radius_sat);
-      // nombre de satellites par conservation de masse
-      float volume_sat = volume(2);
-      n_sat = V_lig/volume_sat;
-      n_sat = n_sat - 2;
-    }
-    // presence de satellites 
-    if (n_sat > 0){
-      // rayons des satellites
-      for (int i=1; i<n_sat-1; i++){
-        particles.radius.add(radius_sat);
-      }
-      // vitesse des satellites
-      for (int i=1; i<n_sat; i++){
-        particles.velocity.add(velocity_sat(i));
-      }
-      // rayons des gouttelettes = rayon du satellite (3 gouttelettes de meme rayon)
-      for (int i=0; i<2; i++){
-        particles.radius.set(i,radius_sat);
-      }
-    }
-    else {
-      particles.radius.remove(2);
-    }
-  }
-  
-  // Stretching separation
-  void stretching_separation(){
-    // mise à jour de la vitesse des gouttelettes
-    Z = (X-sqrt((2.4*f_delta)/We)) / (1-sqrt((2.4*f_delta)/We));
-    System.out.println("Vitesse 1 : "+particles.velocity.get(0));
-    System.out.println("Vitesse 2 : "+particles.velocity.get(1));
-    System.out.println("Z = "+Z);
-    for (int i=0; i<2; i++){ 
-      particles.velocity.get(i).x = calcul_velocity(i, particles.velocity.get(i).x, particles.velocity.get(1-i).x);
-      particles.velocity.get(i).y = calcul_velocity(i, particles.velocity.get(i).y, particles.velocity.get(1-i).y);
-      particles.velocity.get(i).z = calcul_velocity(i, particles.velocity.get(i).z, particles.velocity.get(1-i).z);
-      
-    }
-    V_lig = V_ligament();
+    V_lig = volume(0)+volume(1);
     particles.velocity.get(0).x = particles.velocity.get(0).x * -1;
     
-    System.out.println("Vitesse 1 : "+particles.velocity.get(0));
-    System.out.println("Vitesse 2 : "+particles.velocity.get(1));
     
+    System.out.println("\tV_lig = "+V_lig);
     if (V_lig > 0){
-      // EQ8 r_sat 
-      System.out.println("beta = "+beta);
-      System.out.println("sqrt(We_0) = "+We_0);
       ArrayList<Float> resEq = equation_degre3(beta*sqrt(We_0), 1, 0, -1, r_0);
-      System.out.println("resEq = "+resEq);
+
       float diff_0 = 10000;
       int i_tmp = 0;
       do {
@@ -228,25 +184,84 @@ class Resolving_interaction{
         i_tmp++;
       }
       while ( i_tmp < resEq.size());
-      System.out.println("R_0 = "+r_0);
-      System.out.println("radius_bu = "+radius_bu);
       
       // rayon des satellites
       radius_sat = 1.89 * radius_bu;
-      System.out.println("radius_sat = "+radius_sat);
       particles.radius.add(radius_sat);
       // nombre de satellites par conservation de masse
       float volume_sat = volume(2);
-      System.out.println("volume_sat = "+volume(2));
+      n_sat = V_lig/volume_sat;
+      n_sat = n_sat - 2;
+      System.out.println("\tn_sat = "+n_sat);
+      
+      // presence de satellites 
+      if (n_sat >= 1){
+        // rayons des satellites
+        for (int i=1; i<n_sat-1; i++){
+          particles.radius.add(radius_sat);
+        }
+        // vitesse des satellites
+        for (int i=1; i<n_sat; i++){
+          particles.velocity.add(velocity_sat(i));
+        }
+        // rayons des gouttelettes = rayon du satellite (3 gouttelettes de meme rayon)
+        for (int i=0; i<2; i++){
+          particles.radius.set(i,radius_sat);
+        }
+      }else{
+        particles.radius.remove(2);
+      }
+      particles.printMissingParticles();
+    }
+  }
+  
+  
+  
+  // Stretching separation
+  void stretching_separation(){
+    // mise à jour de la vitesse des gouttelettes
+    Z = (X-sqrt((2.4*f_delta)/We)) / (1-sqrt((2.4*f_delta)/We));
+
+
+
+    for (int i=0; i<2; i++){ 
+      particles.velocity.get(i).x = calcul_velocity(i, particles.velocity.get(i).x, particles.velocity.get(1-i).x);
+      particles.velocity.get(i).y = calcul_velocity(i, particles.velocity.get(i).y, particles.velocity.get(1-i).y);
+      particles.velocity.get(i).z = calcul_velocity(i, particles.velocity.get(i).z, particles.velocity.get(1-i).z);
+      
+    }
+    V_lig = V_ligament();
+    particles.velocity.get(0).x = particles.velocity.get(0).x * -1;
+    
+    if (V_lig > 0){
+      // EQ8 r_sat 
+      ArrayList<Float> resEq = equation_degre3(beta*sqrt(We_0), 1, 0, -1, r_0);
+
+      float diff_0 = 10000;
+      int i_tmp = 0;
+      do {
+        if ( r_0 > resEq.get(i_tmp) && r_0 - resEq.get(i_tmp) < diff_0 ) {
+          diff_0 = r_0 - resEq.get(i_tmp);
+          radius_bu = resEq.get(i_tmp);
+        }
+        i_tmp++;
+      }
+      while ( i_tmp < resEq.size());
+
+
+      
+      // rayon des satellites
+      radius_sat = 1.89 * radius_bu;
+
+      particles.radius.add(radius_sat);
+      // nombre de satellites par conservation de masse
+      float volume_sat = volume(2);
+
       n_sat = V_lig/volume_sat;
       
       // presence de satellites
-      System.out.println("test = "+n_sat+" "+(n_sat >= 1));
+
       if ( n_sat >= 1 ) {
-        System.out.println("n_sat = "+n_sat);
-        
-        System.out.println("rad = "+particles.radius.size());
-        System.out.println("velocity = "+particles.velocity.size());
         // rayon des satellites
         for (int i=1; i<=n_sat-1; i++){
           particles.radius.add(radius_sat);
@@ -257,34 +272,29 @@ class Resolving_interaction{
           particles.velocity.add(velocity_sat(i));
           //particles.velocity.add(new PVector(0,0,0));
         }
-        System.out.println("velocity sat2 = "+particles.velocity.get(2));
-        System.out.println("velocity sat3 = "+particles.velocity.get(3));
-        
+
         //calcul des rayons des gouttelettes par conservation de masse
         for (int i=0; i<2; i++){
           float new_volume = volume(i) - v_interact(i);
           particles.radius.set(i,new_radius(new_volume));
         }
-        
-        System.out.println("rad = "+particles.radius.size());
-        System.out.println("velocity = "+particles.velocity.size());
-      
+ 
       } else {
         particles.radius.remove(2);
       }
       particles.printMissingParticles();
     }
     
-    System.out.println("Vi = "+volume(0));
-    System.out.println("Vj = "+volume(1));
-    System.out.println("V_lig = "+V_lig);
+
+
+
   }
   
   // Coalescence
   void coalescence(){
     
-    System.out.println("Vitesse 1 : "+particles.velocity.get(0));
-    System.out.println("Vitesse 2 : "+particles.velocity.get(1));
+
+
     //calcul du nouveau volume
     float new_volume = volume(0) + volume(1);
     //mise a jour de la vitesse (conservation de la quantité de mouvement [energie cinetique])
@@ -299,8 +309,8 @@ class Resolving_interaction{
     particles.radius.set(0, new_radius(new_volume));
     particles.radius.set(1, 0.0);
     
-    System.out.println("Vitesse 1 : "+particles.velocity.get(0));
-    System.out.println("Vitesse 2 : "+particles.velocity.get(1));
+
+
   }
   
   
@@ -341,23 +351,23 @@ class Resolving_interaction{
     if ( !Float.isNaN(x2) ) r_bu.add(x2);
     if ( !Float.isNaN(x3) ) r_bu.add(x3);
     
-    System.out.println("==========================================");
-      System.out.println("a = "+a);
-      System.out.println("b = "+b);
-      System.out.println("c = "+c);
-      System.out.println("d = "+d);
-      System.out.println("q = "+q);
-      System.out.println("p = "+p);
-      System.out.println("delta_1 = "+delta_1);
-      System.out.println("X1 = "+X1);
-      System.out.println("delta_2 = "+delta_2);
-      System.out.println("X2 = "+X2);
-      System.out.println("X3 = "+X3);
-      System.out.println("------------------------------");
-      System.out.println("x1 = "+x1);
-      System.out.println("x2 = "+x2);
-      System.out.println("x3 = "+x3);
-      System.out.println("==========================================");
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
       
     return r_bu;
   }
@@ -370,10 +380,10 @@ class Resolving_interaction{
   
   // volume dune sphere
   float volume(int k){
-    //System.out.println("Radius = "+particles.radius.get(k));
-    //System.out.println("Pow = "+pow(particles.radius.get(k),3));
-    //System.out.println("4*PI/3 = "+(4*PI)/3);
-    //System.out.println("Return = "+((4*PI)/3)*pow(particles.radius.get(k),3));
+
+
+
+
     return ((4*PI)/3)*pow(particles.radius.get(k),3); 
   }
   
@@ -384,7 +394,7 @@ class Resolving_interaction{
   
   // calcul de phi 
   float volume_calotte(int k, float h){
-    System.out.println(k+" "+h);
+
     return (PI*pow(h,2)*(3*particles.radius.get(k)-h))/3;
   }
   
@@ -399,9 +409,9 @@ class Resolving_interaction{
     float velx = (v_interact(0)/V_lig) * particles.velocity.get(0).x + (v_interact(1)/V_lig) * (particles.velocity.get(1).x+(1-(2*n/(n_sat+1)))*vel_relative(particles.velocity).x);
     float vely = v_interact(0)/V_lig * particles.velocity.get(0).y + v_interact(1)/V_lig * (particles.velocity.get(1).y+(1-2*n/(n_sat+1))*vel_relative(particles.velocity).y);
     float velz = v_interact(0)/V_lig * particles.velocity.get(0).z + v_interact(1)/V_lig * (particles.velocity.get(1).z+(1-2*n/(n_sat+1))*vel_relative(particles.velocity).z);
-    //System.out.println("v_interact(0)" + v_interact(0));
-    //System.out.println("v_interact(1)" + v_interact(1));
-    System.out.println("vel_relative().x : "+ n+" -> "+ velx);
+
+
+
     return new PVector(velx, vely, velz);
   }
   
@@ -421,34 +431,13 @@ class Resolving_interaction{
     float terme_1 = 0.5* rho* pow(norm_vel_relative,2)* volume(0);
     float terme_2 = (pow(delta,3)/pow(1+pow(delta,3),2));
     float terme_3 = ((1+pow(delta,3))- (1-pow(X,2))* (phi[1]+ pow(delta,3)* phi[0]));
-    // System.out.println("\tTerme 1 = "+terme_1);
-    // System.out.println("\tTerme 2 = "+terme_2);
-    // System.out.println("\tTerme 3 = "+terme_3);
+
+
+
     //EQ5
     // coeff de separation de volume
     float C_sep = (E_stretch - E_surface - E_dissip) / (E_stretch + E_surface + E_dissip);
     
-    // DEBUG
-    if ( false ) {
-      System.out.println("==========================================");
-      System.out.println("tau = "+tau);
-      System.out.println("delta = "+delta);
-      System.out.println("delta3 = "+pow(delta,3));
-      System.out.println("sigma = "+sigma);
-      System.out.println("Vi = "+volume(0));
-      System.out.println("Ri = "+particles.radius.get(0));
-      System.out.println("PhiI = "+phi[0]);
-      System.out.println("PhiJ = "+phi[1]);    
-      System.out.println("rho = "+rho);  
-      System.out.println("||uij|| = "+norm_vel_relative);
-      System.out.println("X = "+X);
-      System.out.println("------------------------------");
-      System.out.println("E_surface = "+E_surface);
-      System.out.println("E_stretch = "+E_stretch);
-      System.out.println("E_dissip = "+E_dissip);
-      System.out.println("C_sep = "+C_sep);
-      System.out.println("==========================================");
-    }
     
     
     // Stretching separation

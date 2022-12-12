@@ -61,30 +61,33 @@ class ImpliciteParticles {
    * nouvelle boule qui sera ajouté.
    **/
   void printMissingParticles () {
-    System.out.println("N = "+N);
-    System.out.println("Nb points = "+points.size());
-    System.out.println("Nb velocity = "+velocity.size());
-    System.out.println("Nb radius = "+radius.size());
-
-    float decalage_y = ((points.get(0).y-radius.get(0))-(points.get(1).y+radius.get(1)))/(particles.velocity.size()-2);
-    float y = decalage_y/2;
-
+    float decalage_y = ((particles.points.get(1).y+particles.radius.get(1)) - (particles.points.get(0).y-particles.radius.get(0)))/(particles.velocity.size()-2);
+    float y = 0/2;
+    System.out.println("decalage_y = "+decalage_y);
+    System.out.println("diff = "+(points.get(0).y+radius.get(0)-points.get(1).y-radius.get(1)));
+    System.out.println("P0 = "+points.get(0).y);
+    System.out.println("P1 = "+points.get(1).y);
+    System.out.println("R0 = "+radius.get(0));
+    System.out.println("R1 = "+radius.get(1));
     for ( int i = 2; i < velocity.size(); i++ ) {
       // Si velocity et radius ne possède pas les données pour la nouvelle boule à ajouter
       if ( velocity.size() <= points.size() && radius.size() <= points.size() ) {
         System.err.println("printMissingParticles() : Les listes Velocity ou Radius ne possèdent pas les informations pour créer une nouvelles goutte");
       }else{
-        points.add(new PVector(points.get(0).x, particles.points.get(0).y-radius.get(0) + y, points.get(0).z)); 
-        y -= decalage_y;
+        if (particles.points.get(0).x == particles.points.get(1).y)
+          points.add(new PVector(points.get(0).x, particles.points.get(0).y, points.get(0).z)); 
+        else
+          points.add(new PVector(points.get(0).x, particles.points.get(0).y-radius.get(0) + y, points.get(0).z)); 
+        y += decalage_y;
         N ++;
       }
     }
     
     
-    System.out.println("N = "+N);
-    System.out.println("Nb points = "+points.size());
-    System.out.println("Nb velocity = "+velocity.size());
-    System.out.println("Nb radius = "+radius.size());
+
+
+
+
   }
   
 
@@ -132,9 +135,9 @@ class ImpliciteParticles {
       }
       float demi_distance = (points.get(0).x-points.get(1).x-radius.get(0)-radius.get(1))*0.5;
       
-        System.out.println("P0 : "+ points.get(0).x +"\t rad : "+radius.get(0) );
-        System.out.println("P1 : "+ points.get(1).x +"\t rad : "+radius.get(1) );
-        System.out.println(demi_distance);
+
+
+
       
       // cas impair
       if ( (N-2)%2 == 1 ) {
@@ -144,9 +147,9 @@ class ImpliciteParticles {
         float decalage = demi_distance / ((N-2));
         int indice_milieu = (int) ((N-2)*0.5) + 1;
         
-        //System.out.println("indice_milieu = "+indice_milieu);
+
         for ( int i = 0; i < ((N-2)*0.5); i++ ) {
-          //System.out.println("i = "+i);
+
           int indice_gauche = indice_milieu - i;
           int indice_droite = indice_milieu + (i+1);
           int x_gauche = 0;
@@ -225,12 +228,12 @@ class ImpliciteParticles {
 
   boolean isRupture () {
     boolean ret = false;
-    //System.out.println(N+" "+isCollision);
+
     if ( N > 2 && isCollision ) {
       float distance = resolv.norm(new PVector(points.get(0).x-points.get(1).x,points.get(0).y-points.get(1).y,0)) - radius.get(0) - radius.get(1);
-      //System.out.println("P0 : "+ points.get(0) +"\t rad : "+radius.get(0) );
-      //System.out.println("P1 : "+ points.get(1) +"\t rad : "+radius.get(1) );
-      //System.out.println(distance+" "+ (radius.get(2)*2*(N-2))*zoom );
+
+
+
       if ( distance*2/zoom > radius.get(2)*2*(N-2)) {
         isRuptured = true;
         System.err.println("Rupture");

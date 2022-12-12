@@ -153,10 +153,11 @@ void draw() {
   
   translate(0, 0, -width/2);
   lights();
-  fill(3, 161, 252);
+  noFill();
+  //fill(3, 161, 252);
   frameSimpleSphere();
   //frameMarching();
-  fill(255);
+  //fill(255);
   
   
   
@@ -177,7 +178,7 @@ void draw() {
   // get speed Ball 2
   float speed_1_selected = Float.parseFloat(""+ihm.L_velocity.getItem((int)ihm.R_velocity.getValue()).get("text"));
   
-  //System.out.println(variable+" "+particles.diff_hauteur);
+
   if ( distance_selected != ihm.diff_hauteur_selected ||
        size_0_selected != ihm.droplet_radius_selected[0] ||
        speed_0_selected != ihm.droplet_speed_selected[0] || 
@@ -188,20 +189,21 @@ void draw() {
     ihm.diff_hauteur_selected = distance_selected;
     distance = (ihm.diff_hauteur_selected*0.01)*(size_0_selected+size_1_selected);
     initMarching();
+    
+    //speed = speed_selected;
+    if ( !particles.isCollision ) particles.radius.set(0, size_0_selected);
+    if ( !particles.isCollision ) particles.velocity.set(0, new PVector(speed_0_selected,particles.velocity.get(0).y,0));
+    ihm.droplet_radius_selected[0] = size_0_selected;
+    ihm.droplet_speed_selected[0] = speed_0_selected;
+    if ( !particles.isCollision ) particles.radius.set(1, size_1_selected);
+    if ( !particles.isCollision ) particles.velocity.set(1, new PVector(-speed_1_selected,particles.velocity.get(1).y,0));
+    ihm.droplet_radius_selected[1] = size_1_selected;
+    ihm.droplet_speed_selected[1] = speed_1_selected;
+  
     resolv = new Resolving_interaction();
     resolv.init(); 
     ihm.resolv = resolv;
   }
-  
-  //speed = speed_selected;
-  if ( !particles.isCollision ) particles.radius.set(0, size_0_selected);
-  if ( !particles.isCollision ) particles.velocity.set(0, new PVector(speed_0_selected,particles.velocity.get(0).y,0));
-  ihm.droplet_radius_selected[0] = size_0_selected;
-  ihm.droplet_speed_selected[0] = speed_0_selected;
-  if ( !particles.isCollision ) particles.radius.set(1, size_1_selected);
-  if ( !particles.isCollision ) particles.velocity.set(1, new PVector(-speed_1_selected,particles.velocity.get(1).y,0));
-  ihm.droplet_radius_selected[1] = size_1_selected;
-  ihm.droplet_speed_selected[1] = speed_1_selected;
   
   
   if ( run ) {
