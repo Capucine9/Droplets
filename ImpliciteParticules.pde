@@ -19,7 +19,7 @@ class ImpliciteParticles {
   float posY = 0;
   float diff_hauteur = 11;
   float zoom = 30;
-  int espace_begin = 200;
+  int espace_begin = 500;
   
 
   /**

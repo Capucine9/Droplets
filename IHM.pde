@@ -164,7 +164,7 @@ class IHM {
     // Height difference between the two droplets
     // ======================================================================================
     textSize(25);
-    text("Distance de hauteur des centres des gouttes (cm) :", margeLeft, level_height);  // * 2.5 to avoid text in the windows bar
+    text("Distance de hauteur des centres des gouttes (%) :", margeLeft, level_height);  // * 2.5 to avoid text in the windows bar
    
     
     
