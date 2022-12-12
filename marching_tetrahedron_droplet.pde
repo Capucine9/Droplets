@@ -6,6 +6,7 @@ float [][][] field;
 int cols, rows, layers;
 ImpliciteParticles particles;
 Resolving_interaction interactions;
+float distance = 0;
 
 float f(float d) {
   return (d < 1) ? 8.0*pow(1 - d*d,2)/9 : 0;
@@ -14,7 +15,8 @@ float f(float d) {
 
 void initMarching() {
   //size(1280, 720, P3D);
-  particles = new ImpliciteParticles();
+  N = 2;
+  particles = new ImpliciteParticles(distance);
   cols = 1 + width / rez;
   //rows = 1 + height / rez;
   //layers = 1 + width / rez;

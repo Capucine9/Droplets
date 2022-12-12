@@ -116,6 +116,9 @@ PeasyCam cam;
 IHM ihm;
 
 Resolving_interaction resolv;
+boolean run = false;
+
+float speed = 1;
 
 
 void settings() {
@@ -150,11 +153,8 @@ void draw() {
   
   translate(0, 0, -width/2);
   lights();
-  //frameMarching();
   frameSimpleSphere();
-  try{
-  //Thread.sleep(1000);
-  }catch(Exception e){e.printStackTrace();}
+  //frameMarching();
   
   
   
@@ -169,27 +169,42 @@ void draw() {
   float speed_selected = Float.parseFloat(""+ihm.speed_ddl.getItem((int)ihm.speed_ddl.getValue()).get("text"));
   //System.out.println(variable2);
   // get size Ball 1
-  float size_1_selected = Float.parseFloat(""+ihm.L_diameter.getItem((int)ihm.L_diameter.getValue()).get("text"));
+  float size_0_selected = Float.parseFloat(""+ihm.L_diameter.getItem((int)ihm.L_diameter.getValue()).get("text"));
   //System.out.println(variable2);
   // get speed Ball 1
-  //particles.velocity.set(0, new PVector(Float.parseFloat(""+ihm.L_velocity.getItem((int)ihm.L_velocity.getValue()).get("text")),0,0));
+  float speed_0_selected = Float.parseFloat(""+ihm.L_velocity.getItem((int)ihm.L_velocity.getValue()).get("text"));
   //System.out.println(variable2);
   // get size Ball 2
-  float variable2 = Float.parseFloat(""+ihm.R_diameter.getItem((int)ihm.R_diameter.getValue()).get("text"));
+  float size_1_selected = Float.parseFloat(""+ihm.R_diameter.getItem((int)ihm.R_diameter.getValue()).get("text"));
   //System.out.println(variable2);
   // get speed Ball 2
-  //particles.velocity.set(1, new PVector(-Float.parseFloat(""+ihm.R_velocity.getItem((int)ihm.R_velocity.getValue()).get("text")),0,0));
+  float speed_1_selected = Float.parseFloat(""+ihm.L_velocity.getItem((int)ihm.R_velocity.getValue()).get("text"));
   //System.out.println(variable2);
   
   //System.out.println(variable+" "+particles.diff_hauteur);
-  //if ( distance_selected != particles.diff_hauteur ) {
-  //  initMarching();
-  //  resolv = new Resolving_interaction();
-  //  resolv.init(); 
-  //}
+  if ( distance_selected != ihm.diff_hauteur_selected ||
+       size_0_selected != ihm.droplet_radius_selected[0] ||
+       speed_0_selected != ihm.droplet_speed_selected[0] || 
+       size_1_selected != ihm.droplet_radius_selected[1] ||
+       speed_1_selected != ihm.droplet_speed_selected[1] ) {
+         
+         
+    ihm.diff_hauteur_selected = distance_selected;
+    distance = (ihm.diff_hauteur_selected*0.01)*(particles.radius.get(0)+particles.radius.get(1));
+    initMarching();
+    resolv = new Resolving_interaction();
+    resolv.init(); 
+  }
   
-  
-  //particles.diff_hauteur = distance_selected;
+  speed = speed_selected;
+  if ( !particles.isCollision ) particles.radius.set(0, size_0_selected);
+  if ( !particles.isCollision ) particles.velocity.set(0, new PVector(speed_0_selected,particles.velocity.get(0).y,0));
+  ihm.droplet_radius_selected[0] = size_0_selected;
+  ihm.droplet_speed_selected[0] = speed_0_selected;
+  if ( !particles.isCollision ) particles.radius.set(1, size_1_selected);
+  if ( !particles.isCollision ) particles.velocity.set(1, new PVector(-speed_1_selected,particles.velocity.get(1).y,0));
+  ihm.droplet_radius_selected[1] = size_1_selected;
+  ihm.droplet_speed_selected[1] = speed_1_selected;
     
   // Structure (keys) of DropdownList.getItem()
   // view
@@ -199,18 +214,31 @@ void draw() {
   // state
   // value
   
-  // collision
-  if ( particles.radius.get(0)+particles.radius.get(1) > particles.diff_hauteur) {
-    if (particles.points.get(1).x - particles.points.get(0).x < 0 && particles.isCollision == false){
-      particles.isCollision = true;
-      //particles.limite = 0.5;
-      resolv.calcul_We(); // determine le type de collision
+  if ( run ) {
+    
+    try{
+    //Thread.sleep((long)(abs(1-(1/speed)))*1000);
+    }catch(Exception e){e.printStackTrace();}
+    
+    // collision
+    if ( particles.radius.get(0)+particles.radius.get(1) > particles.diff_hauteur) {
+      if (particles.points.get(1).x - particles.points.get(0).x < 0 && particles.isCollision == false){
+        particles.isCollision = true;
+        //particles.limite = 0.5;
+        resolv.calcul_We(); // determine le type de collision
+      }
+      if ( !particles.isRuptured && particles.isRupture() )
+        particles.isRuptured = true;
     }
-    if ( !particles.isRuptured && particles.isRupture() )
-      particles.isRuptured = true;
-  }
-  
-  
+  }  
+}
+
+
+/**
+ * Method executed when the user click on a mouse button
+ **/
+void mousePressed() {
+ if ( mouseButton == RIGHT ) run = !run;
 }
 
 

@@ -19,13 +19,14 @@ class ImpliciteParticles {
   float posY = 0;
   float diff_hauteur = 11;
   float zoom = 30;
-  int espace_begin = 50;
+  int espace_begin = 200;
   
 
   /**
    * Creation des spheres
    **/
-  ImpliciteParticles() {
+  ImpliciteParticles(float dist) {
+    this.diff_hauteur = dist;
     radius.add(6.0);
     radius.add(6.0);
     // Initialisation de variables
@@ -93,7 +94,7 @@ class ImpliciteParticles {
   void nextStep() {
     for (int i = 0; i < N; i++) {
       if ( i < N ) {
-        if ( i < 2 || isRuptured ) {
+        if ( (i < 2 || isRuptured ) && run ) {
           PVector p = points.get(i);
           p.add(velocity.get(i));
         }

@@ -19,13 +19,13 @@ class IHM {
   
   
   
-  int[] diffHeight = {0, 1, 2};
+  int[] diffHeight = {0, 25, 50, 75, 80, 90};
   int diffHeight_selected = 0;
   
   float[] speed = {0.25, 0.5, 1, 2};
   int speed_selected = 0;
   
-  float[] diameter = {0.5, 0.75, 1, 1.5, 2, 3};
+  float[] diameter = {0.5, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
   int L_diameter_selected = 0;
   int R_diameter_selected = 0;
   
@@ -38,6 +38,12 @@ class IHM {
   int level_side = 80;
   int level_diameter_velocity = 120;
   
+  
+  
+  float diff_hauteur_selected = 0.0;
+  float[] droplet_speed_selected = {0.0,0.0};
+  float[] droplet_radius_selected = {0.0,0.0};
+    
   
   IHM(PApplet app) {
     this.controlP5 = new ControlP5(app);
