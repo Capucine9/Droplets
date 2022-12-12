@@ -136,10 +136,10 @@ void setup() {
   //cam.setYawRotationMode();          // allow rotation only on the axe y
   
   
-  ihm = new IHM(this);
   initMarching();
   resolv = new Resolving_interaction();
   resolv.init();
+  ihm = new IHM(this,resolv);
   //resolv.calcul_We();
   //noFill();
   
@@ -153,8 +153,10 @@ void draw() {
   
   translate(0, 0, -width/2);
   lights();
+  fill(3, 161, 252);
   frameSimpleSphere();
   //frameMarching();
+  fill(255);
   
   
   
@@ -162,24 +164,18 @@ void draw() {
   translate(0, 0, width/2);
   ihm.printInterface();
   
-  boolean diff = false;
   // get distance
   int distance_selected = Integer.parseInt(""+ihm.distance.getItem((int)ihm.distance.getValue()).get("text"));
   // get speed
-  float speed_selected = Float.parseFloat(""+ihm.speed_ddl.getItem((int)ihm.speed_ddl.getValue()).get("text"));
-  //System.out.println(variable2);
+  //float speed_selected = Float.parseFloat(""+ihm.speed_ddl.getItem((int)ihm.speed_ddl.getValue()).get("text"));
   // get size Ball 1
   float size_0_selected = Float.parseFloat(""+ihm.L_diameter.getItem((int)ihm.L_diameter.getValue()).get("text"));
-  //System.out.println(variable2);
   // get speed Ball 1
   float speed_0_selected = Float.parseFloat(""+ihm.L_velocity.getItem((int)ihm.L_velocity.getValue()).get("text"));
-  //System.out.println(variable2);
   // get size Ball 2
   float size_1_selected = Float.parseFloat(""+ihm.R_diameter.getItem((int)ihm.R_diameter.getValue()).get("text"));
-  //System.out.println(variable2);
   // get speed Ball 2
   float speed_1_selected = Float.parseFloat(""+ihm.L_velocity.getItem((int)ihm.R_velocity.getValue()).get("text"));
-  //System.out.println(variable2);
   
   //System.out.println(variable+" "+particles.diff_hauteur);
   if ( distance_selected != ihm.diff_hauteur_selected ||
@@ -190,13 +186,14 @@ void draw() {
          
          
     ihm.diff_hauteur_selected = distance_selected;
-    distance = (ihm.diff_hauteur_selected*0.01)*(particles.radius.get(0)+particles.radius.get(1));
+    distance = (ihm.diff_hauteur_selected*0.01)*(size_0_selected+size_1_selected);
     initMarching();
     resolv = new Resolving_interaction();
     resolv.init(); 
+    ihm.resolv = resolv;
   }
   
-  speed = speed_selected;
+  //speed = speed_selected;
   if ( !particles.isCollision ) particles.radius.set(0, size_0_selected);
   if ( !particles.isCollision ) particles.velocity.set(0, new PVector(speed_0_selected,particles.velocity.get(0).y,0));
   ihm.droplet_radius_selected[0] = size_0_selected;
@@ -205,17 +202,9 @@ void draw() {
   if ( !particles.isCollision ) particles.velocity.set(1, new PVector(-speed_1_selected,particles.velocity.get(1).y,0));
   ihm.droplet_radius_selected[1] = size_1_selected;
   ihm.droplet_speed_selected[1] = speed_1_selected;
-    
-  // Structure (keys) of DropdownList.getItem()
-  // view
-  // color
-  // name
-  // text
-  // state
-  // value
+  
   
   if ( run ) {
-    
     try{
     //Thread.sleep((long)(abs(1-(1/speed)))*1000);
     }catch(Exception e){e.printStackTrace();}

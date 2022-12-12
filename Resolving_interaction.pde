@@ -136,6 +136,16 @@ class Resolving_interaction{
       coalescence();}
   }
   
+  String predict () {
+    if (We > We_reflex && We_reflex > 0 )
+      return "Reflexive separation";
+    else if (We > We_stretch)
+      return "Stretching separation";
+    else 
+      return "Coalescence";
+  }
+    
+  
   
   //TODO : EXECUTER METHODE EN FONCTION DE LA SORTIE DE CALCUL_WE()
   

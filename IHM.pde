@@ -5,6 +5,7 @@ import controlP5.*;
 class IHM {
   
   ControlP5 controlP5;
+  Resolving_interaction resolv;
   
   DropdownList distance; 
   DropdownList speed_ddl; 
@@ -45,8 +46,9 @@ class IHM {
   float[] droplet_radius_selected = {0.0,0.0};
     
   
-  IHM(PApplet app) {
+  IHM(PApplet app, Resolving_interaction r) {
     this.controlP5 = new ControlP5(app);
+    this.resolv = r;
     
     // initialize the distance dropdownlist
     distance = controlP5.addDropdownList("...",550,level_height-15,100,300);
@@ -55,9 +57,9 @@ class IHM {
     
     
     // initialize the speed dropdownlist
-    speed_ddl = controlP5.addDropdownList("... ",width-120, level_height-15,100,300);
-    speed_ddl.setFont(createFont("arial",15));
-    customizeSpeed();
+    //speed_ddl = controlP5.addDropdownList("... ",width-120, level_height-15,100,300);
+    //speed_ddl.setFont(createFont("arial",15));
+    //customizeSpeed();
     
     
     // customize diameter and velocity dropdownlist
@@ -76,7 +78,6 @@ class IHM {
     
     customizeVelocity(L_velocity);
     customizeVelocity(R_velocity);
-    
     
   }
   
@@ -189,7 +190,16 @@ class IHM {
     // ======================================================================================
     // Simulation' velocity
     // ======================================================================================
-    text("Vitesse de la simulation : ", width-400,level_height);    
+    //text("Vitesse de la simulation : ", width-400,level_height);  
+    try{
+      text("Type : "+resolv.predict(),margeLeft, height-30);
+    }catch(Exception e){}
+  }
+  
+  
+  
+  void updateTypeCollision () {
+    
   }
 
   
