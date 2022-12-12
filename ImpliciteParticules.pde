@@ -74,7 +74,7 @@ class ImpliciteParticles {
       if ( velocity.size() <= points.size() && radius.size() <= points.size() ) {
         System.err.println("printMissingParticles() : Les listes Velocity ou Radius ne possèdent pas les informations pour créer une nouvelles goutte");
       }else{
-        if (particles.points.get(0).x == particles.points.get(1).y)
+        if (particles.points.get(0).y == particles.points.get(1).y)
           points.add(new PVector(points.get(0).x, particles.points.get(0).y, points.get(0).z)); 
         else
           points.add(new PVector(points.get(0).x, particles.points.get(0).y-radius.get(0) + y, points.get(0).z)); 
