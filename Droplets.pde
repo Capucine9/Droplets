@@ -117,7 +117,6 @@ IHM ihm;
 
 Resolving_interaction resolv;
 
-boolean collision = false;
 
 void settings() {
   size((int)(1280*1),(int)(720*1), P3D);
@@ -139,7 +138,7 @@ void setup() {
   resolv = new Resolving_interaction();
   resolv.init();
   //resolv.calcul_We();
-
+  //noFill();
   
   if ( particles.radius.get(0)+particles.radius.get(1) <= particles.diff_hauteur)
     System.out.println("No collision");
@@ -153,6 +152,9 @@ void draw() {
   lights();
   //frameMarching();
   frameSimpleSphere();
+  try{
+  //Thread.sleep(1000);
+  }catch(Exception e){e.printStackTrace();}
   
   
   
@@ -199,11 +201,13 @@ void draw() {
   
   // collision
   if ( particles.radius.get(0)+particles.radius.get(1) > particles.diff_hauteur) {
-    if (particles.points.get(1).x - particles.points.get(0).x < 0 && collision == false){
-      collision = true;
+    if (particles.points.get(1).x - particles.points.get(0).x < 0 && particles.isCollision == false){
+      particles.isCollision = true;
       //particles.limite = 0.5;
       resolv.calcul_We(); // determine le type de collision
     }
+    if ( !particles.isRuptured && particles.isRupture() )
+      particles.isRuptured = true;
   }
   
   

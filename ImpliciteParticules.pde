@@ -6,6 +6,9 @@ class ImpliciteParticles {
   ArrayList<Float> radius = new ArrayList<Float>();
   //float [] radius = {100, 100}; //TODO : r[0]>=r[1]
 
+  boolean isRuptured = false;
+  boolean isCollision = false;
+
   int minimumY;
   int maximumY;
   int minimumZ;
@@ -14,9 +17,9 @@ class ImpliciteParticles {
   float posX1;
   float posX2;
   float posY = 0;
-  float diff_hauteur = 10;
-  float zoom = 20;
-  int espace_begin = 300;
+  float diff_hauteur = 11;
+  float zoom = 30;
+  int espace_begin = 50;
   
 
   /**
@@ -62,16 +65,16 @@ class ImpliciteParticles {
     System.out.println("Nb velocity = "+velocity.size());
     System.out.println("Nb radius = "+radius.size());
 
-    float decalage_y = particles.diff_hauteur/(particles.velocity.size()-2);
-    float y = decalage_y;
+    float decalage_y = ((points.get(0).y-radius.get(0))-(points.get(1).y+radius.get(1)))/(particles.velocity.size()-2);
+    float y = decalage_y/2;
 
     for ( int i = 2; i < velocity.size(); i++ ) {
       // Si velocity et radius ne possède pas les données pour la nouvelle boule à ajouter
       if ( velocity.size() <= points.size() && radius.size() <= points.size() ) {
         System.err.println("printMissingParticles() : Les listes Velocity ou Radius ne possèdent pas les informations pour créer une nouvelles goutte");
       }else{
-        points.add(new PVector(points.get(0).x, particles.points.get(1).y + y, points.get(0).z)); 
-        y += decalage_y;
+        points.add(new PVector(points.get(0).x, particles.points.get(0).y-radius.get(0) + y, points.get(0).z)); 
+        y -= decalage_y;
         N ++;
       }
     }
@@ -90,22 +93,106 @@ class ImpliciteParticles {
   void nextStep() {
     for (int i = 0; i < N; i++) {
       if ( i < N ) {
-        PVector p = points.get(i);
-        p.add(velocity.get(i));
+        if ( i < 2 || isRuptured ) {
+          PVector p = points.get(i);
+          p.add(velocity.get(i));
+        }
       }
     }
 
     // to have the origin at the center of the screen
     translate(width/2, height/2, 0);
 
-    for ( int i = 0; i < N; i++ ) {
-      translate(particles.points.get(i).x, particles.points.get(i).y*zoom, 0);
-      sphere(particles.radius.get(i)*zoom);
-      translate(-particles.points.get(i).x, -particles.points.get(i).y*zoom, 0);
+    // for ( int i = 0; i < N; i++ ) {
+    //   if ( isCollision && !isRuptured ) {
+    //     float distance = resolv.norm(new PVector(points.get(0).x-points.get(1).x,points.get(0).y-points.get(1).y,0)) - radius.get(0) - radius.get(1);
+    //     float decalage = (distance / (N-2);
+
+    //     // cas impair, satelite du milieu
+    //     if ( (N-2)%2 == 1 && i == round((N-2)/2) )  {
+
+    //     }else if ( (N-2)%2 == 0 && i == round((N-2)/2) )  {
+
+
+
+    //   }else{
+    //     translate(particles.points.get(i).x, particles.points.get(i).y*zoom, 0);
+    //     sphere(particles.radius.get(i)*zoom);
+    //     translate(-particles.points.get(i).x, -particles.points.get(i).y*zoom, 0);
+    //   }
+    // }
+
+
+    if ( isCollision && !isRuptured ) {
+      for ( int i = 0; i < 2; i++ ) {
+          translate(particles.points.get(i).x, particles.points.get(i).y*zoom, 0);
+          sphere(particles.radius.get(i)*zoom);
+          translate(-particles.points.get(i).x, -particles.points.get(i).y*zoom, 0);
+      }
+      float demi_distance = (points.get(0).x-points.get(1).x-radius.get(0)-radius.get(1))*0.5;
+      
+        System.out.println("P0 : "+ points.get(0).x +"\t rad : "+radius.get(0) );
+        System.out.println("P1 : "+ points.get(1).x +"\t rad : "+radius.get(1) );
+        System.out.println(demi_distance);
+      
+      // cas impair
+      if ( (N-2)%2 == 1 ) {
+
+      // cas pair
+      }else{
+        float decalage = demi_distance / ((N-2));
+        int indice_milieu = (int) ((N-2)*0.5) + 1;
+        
+        //System.out.println("indice_milieu = "+indice_milieu);
+        for ( int i = 0; i < ((N-2)*0.5); i++ ) {
+          //System.out.println("i = "+i);
+          int indice_gauche = indice_milieu - i;
+          int indice_droite = indice_milieu + (i+1);
+          int x_gauche = 0;
+          int x_droite = 0;
+          if ( i == 0 ) {
+            x_gauche = (int) (particles.points.get(1).x + demi_distance - 0.5*decalage);
+            x_droite = (int) (particles.points.get(0).x - demi_distance );
+          }else{
+            x_gauche = (int) (particles.points.get(1).x + demi_distance - i*decalage - 0.5*decalage);
+            x_droite = (int) (particles.points.get(0).x - demi_distance + i*decalage );
+          }
+          
+
+          
+          // gauche
+          particles.points.get(indice_gauche).x = x_gauche;
+          translate(particles.points.get(indice_gauche).x, particles.points.get(indice_gauche).y*zoom, 0);
+          sphere(particles.radius.get(indice_gauche)*zoom);
+          translate(-particles.points.get(indice_gauche).x, -particles.points.get(indice_gauche).y*zoom, 0);
+          
+          // droite
+          particles.points.get(indice_droite).x = x_droite;
+          translate(particles.points.get(indice_droite).x, particles.points.get(indice_droite).y*zoom, 0);
+          sphere(particles.radius.get(indice_droite)*zoom);
+          translate(-particles.points.get(indice_droite).x, -particles.points.get(indice_droite).y*zoom, 0);
+
+        }
+      }
+      float decalage = demi_distance / (N-3);
+
+
+    }else{
+      for ( int i = 0; i < N; i++ ) {
+        if ( i < 2 ) {
+          translate(particles.points.get(i).x, particles.points.get(i).y*zoom, 0);
+          sphere(particles.radius.get(i)*zoom);
+          translate(-particles.points.get(i).x, -particles.points.get(i).y*zoom, 0);
+        }else{
+          translate(particles.points.get(i).x, particles.points.get(i).y*zoom, 0);
+          sphere(particles.radius.get(i)*zoom);
+          translate(-particles.points.get(i).x, -particles.points.get(i).y*zoom, 0);
+        }
+      }
     }
     
     translate(-width/2, -height/2, 0);
-
+    
   }
 
   
@@ -132,6 +219,23 @@ class ImpliciteParticles {
 
   PVector interp(float x1, float y1, float z1, float x2, float y2, float z2) {
     return interpRec(x1, y1, z1, x2, y2, z2, REC_INTERP);
+  }
+
+
+  boolean isRupture () {
+    boolean ret = false;
+    //System.out.println(N+" "+isCollision);
+    if ( N > 2 && isCollision ) {
+      float distance = resolv.norm(new PVector(points.get(0).x-points.get(1).x,points.get(0).y-points.get(1).y,0)) - radius.get(0) - radius.get(1);
+      //System.out.println("P0 : "+ points.get(0) +"\t rad : "+radius.get(0) );
+      //System.out.println("P1 : "+ points.get(1) +"\t rad : "+radius.get(1) );
+      //System.out.println(distance+" "+ (radius.get(2)*2*(N-2))*zoom );
+      if ( distance*2/zoom > radius.get(2)*2*(N-2)) {
+        isRuptured = true;
+        System.err.println("Rupture");
+      }
+    }
+    return ret;
   }
 
 
