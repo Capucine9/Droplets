@@ -117,6 +117,7 @@ IHM ihm;
 
 Resolving_interaction resolv;
 boolean run = false;
+boolean Sphere = false;
 
 float speed = 1;
 
@@ -151,19 +152,18 @@ void setup() {
 void draw() {
   background(75);
   
-  translate(0, 0, -width/2);
+  translate(width/2, height/2, -width/2);
   lights();
   noFill();
   //fill(3, 161, 252);
-  frameSimpleSphere();
-  //frameMarching();
+  //frameSimpleSphere();
+  frameMarching();
   //fill(255);
   
   
   
   
-  translate(0, 0, width/2);
-  ihm.printInterface();
+  translate(-width/2, -height/2, width/2);
   
   // get distance
   int distance_selected = Integer.parseInt(""+ihm.distance.getItem((int)ihm.distance.getValue()).get("text"));
@@ -222,6 +222,8 @@ void draw() {
         particles.isRuptured = true;
     }
   }  
+  
+  ihm.printInterface();
 }
 
 
@@ -237,6 +239,7 @@ void mousePressed() {
  * Affiche les goutes comme de simple sphères. Ne fonctionne que si les sphère ont une vitesse Y et Z nulle
  **/
 void frameSimpleSphere () {
+  Sphere = true;
   particles.nextStep();
   // int zoom = 30;
   // float decalage_y = particles.diff_hauteur/(particles.velocity.size()-2);

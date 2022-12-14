@@ -15,10 +15,7 @@ class IHM {
   DropdownList L_velocity; 
   DropdownList R_velocity; 
   
-  
   int margeLeft = 10;
-  
-  
   
   int[] diffHeight = {0, 25, 50, 75, 80, 90};
   int diffHeight_selected = 0;
@@ -26,7 +23,7 @@ class IHM {
   float[] speed = {0.25, 0.5, 1, 2};
   int speed_selected = 0;
   
-  float[] diameter = {0.5, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
+  float[] diameter = {0.3, 0.4, 0.5, 0.8};
   int L_diameter_selected = 0;
   int R_diameter_selected = 0;
   

@@ -17,7 +17,7 @@ void initMarching() {
   //size(1280, 720, P3D);
   N = 2;
   particles = new ImpliciteParticles(distance);
-  cols = 1 + width / rez;
+  cols = 1 + width / (2*rez);
   //rows = 1 + height / rez;
   //layers = 1 + width / rez;
   //field = new float[cols][rows][layers];
@@ -49,11 +49,13 @@ void poly(PVector v1, PVector v2, PVector v3, PVector v4) {
 
 
 void frameMarching() {
+  Sphere = false;
   
   //parcours de l'affichage
-  for (int i = 0; i < cols-1; i++) {
-    for (int j = particles.minimumY/rez; j < particles.maximumY/rez; j++) {
-      for (int k = (int)(particles.points.get(0).z-(particles.radius.get(0)+1)*particles.zoom)/rez; k <= (int)(particles.points.get(0).z+(particles.radius.get(0)+1)*particles.zoom)/rez; k++){
+  for (int i = -cols+1; i < cols-1; i++) {
+    for (int j = (int)particles.minimumY/rez; j < (int)particles.maximumY/rez; j++) {
+      for (int k = (int)(particles.points.get(0).z-(particles.radius.get(0)+1)*particles.zoom_tetra)/rez; k <= (int)(particles.points.get(0).z+(particles.radius.get(0)+1)*particles.zoom_tetra)/rez; k++){
+        
         float x = i * rez;
         float y = j * rez;
         float z = k * rez;
@@ -308,7 +310,7 @@ void frameMarching() {
     }
   }
   
-  interactions = new Resolving_interaction();
+  //interactions = new Resolving_interaction();
   particles.nextStep();
 }
 

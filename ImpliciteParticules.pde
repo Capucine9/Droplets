@@ -9,16 +9,15 @@ class ImpliciteParticles {
   boolean isRuptured = false;
   boolean isCollision = false;
 
-  int minimumY;
-  int maximumY;
-  int minimumZ;
-  int maximumZ;
+  float minimumY = height+1;
+  float maximumY = -1;
   float tailleZ;
   float posX1;
   float posX2;
   float posY = 0;
-  float diff_hauteur = 11;
   float zoom = 30;
+  float zoom_tetra = 130;
+  float diff_hauteur = 0;
   int espace_begin = 500;
   
 
@@ -26,7 +25,10 @@ class ImpliciteParticles {
    * Creation des spheres
    **/
   ImpliciteParticles(float dist) {
+    //if (!Sphere)
+    //  dist*=zoom_tetra;
     this.diff_hauteur = dist;
+    System.out.println("diff_hauteur "+diff_hauteur);
     radius.add(6.0);
     radius.add(6.0);
     // Initialisation de variables
@@ -49,9 +51,16 @@ class ImpliciteParticles {
       Diff_h = 10
       Vitesse = 4 / -4
      */
+     //diff_hauteur/= zoom_tetra;
+     //points.get(0).y = posY+diff_hauteur*0.5;
 
-    // minimumY = (int)min(points.get(1).y-(radius.get(1)+1)*zoom, points.get(0).y-(radius.get(0)+1)*zoom);
-    // maximumY = (int)max(points.get(1).y+(radius.get(1)+1)*zoom, points.get(0).y+(radius.get(0)+1)*zoom);  
+    for (int i = 0; i < N-1; i++){
+      if (minimumY > points.get(i).y-(radius.get(i)+1)*zoom)
+          minimumY = points.get(i).y-(radius.get(i)+1)*zoom;
+          
+      if (maximumY < points.get(i).y+(radius.get(i)+1)*zoom)
+          maximumY = points.get(i).y+(radius.get(i)+1)*zoom;
+    }
   }
   
   
@@ -129,9 +138,11 @@ class ImpliciteParticles {
 
     if ( isCollision && !isRuptured ) {
       for ( int i = 0; i < 2; i++ ) {
+        if (Sphere){
           translate(particles.points.get(i).x, particles.points.get(i).y*zoom, 0);
           sphere(particles.radius.get(i)*zoom);
           translate(-particles.points.get(i).x, -particles.points.get(i).y*zoom, 0);
+        }
       }
       float demi_distance = (points.get(0).x-points.get(1).x-radius.get(0)-radius.get(1))*0.5;
       
@@ -167,13 +178,15 @@ class ImpliciteParticles {
           // gauche
           particles.points.get(indice_gauche).x = x_gauche;
           translate(particles.points.get(indice_gauche).x, particles.points.get(indice_gauche).y*zoom, 0);
-          sphere(particles.radius.get(indice_gauche)*zoom);
+          if (Sphere)
+            sphere(particles.radius.get(indice_gauche)*zoom);
           translate(-particles.points.get(indice_gauche).x, -particles.points.get(indice_gauche).y*zoom, 0);
           
           // droite
           particles.points.get(indice_droite).x = x_droite;
           translate(particles.points.get(indice_droite).x, particles.points.get(indice_droite).y*zoom, 0);
-          sphere(particles.radius.get(indice_droite)*zoom);
+          if (Sphere)
+            sphere(particles.radius.get(indice_droite)*zoom);
           translate(-particles.points.get(indice_droite).x, -particles.points.get(indice_droite).y*zoom, 0);
 
         }
@@ -185,11 +198,13 @@ class ImpliciteParticles {
       for ( int i = 0; i < N; i++ ) {
         if ( i < 2 ) {
           translate(particles.points.get(i).x, particles.points.get(i).y*zoom, 0);
-          sphere(particles.radius.get(i)*zoom);
+          if (Sphere)
+            sphere(particles.radius.get(i)*zoom);
           translate(-particles.points.get(i).x, -particles.points.get(i).y*zoom, 0);
         }else{
           translate(particles.points.get(i).x, particles.points.get(i).y*zoom, 0);
-          sphere(particles.radius.get(i)*zoom);
+          if (Sphere)
+            sphere(particles.radius.get(i)*zoom);
           translate(-particles.points.get(i).x, -particles.points.get(i).y*zoom, 0);
         }
       }
@@ -206,8 +221,15 @@ class ImpliciteParticles {
   float eval(float i, float j, float k) {
     PVector n = new PVector(i, j, k);
     float v = 0;
-    for (int r=0; r<N; r++){
-      v += f(points.get(r).dist(n)/(radius.get(r)*zoom));
+    for (int r=0; r<2; r++){
+      PVector tmp = new PVector(points.get(r).x, points.get(r).y*zoom_tetra, points.get(r).z);
+      v += f(tmp.dist(n)/(radius.get(r)*zoom_tetra));
+    }
+    for (int r=2; r<N; r++){
+      float zoom_sat = 1;
+      if ( radius.get(r) < 0.5 ) zoom_sat = 3;
+      PVector tmp = new PVector(points.get(r).x, points.get(r).y*zoom_tetra*zoom_sat, points.get(r).z);
+      v += f(tmp.dist(n)/(radius.get(r)*zoom_tetra*zoom_sat));
     }
     return v;
   }
@@ -217,7 +239,7 @@ class ImpliciteParticles {
    * Evaluation es sommets (0 ou 1)
    **/
   int evalInt(float i, float j, float k) {
-    return (eval(i, j, k) >= 0.1) ? 1 : 0;
+    return (eval(i, j, k) >= 0.0001) ? 1 : 0;
   }
   
 

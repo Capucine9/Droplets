@@ -14,7 +14,7 @@ class Resolving_interaction{
   float norm_vel_relative = -1.23456;
   float We =                -1.23456;
   float We_reflex =         -1.23456;
-  double We_stretch =        -1.23456;
+  double We_stretch =       -1.23456;
   float X =                 -1.23456;
   float ksi =               -1.23456;
   float eta_1 =             -1.23456;
@@ -35,6 +35,7 @@ class Resolving_interaction{
   void init() {
     //particles = new ImpliciteParticles();
     
+    if (!Sphere)
     delta = particles.radius.get(1) / particles.radius.get(0);
     f_delta = pow(delta,-3)-2.4*pow(delta,-2)+2.7*pow(delta,-1);
     
@@ -233,6 +234,8 @@ class Resolving_interaction{
     V_lig = V_ligament();
     particles.velocity.get(0).x = particles.velocity.get(0).x * -1;
     
+    
+    System.out.println("v_lig = "+V_lig);
     if (V_lig > 0){
       // EQ8 r_sat 
       ArrayList<Float> resEq = equation_degre3(beta*sqrt(We_0), 1, 0, -1, r_0);
@@ -258,6 +261,7 @@ class Resolving_interaction{
       float volume_sat = volume(2);
 
       n_sat = V_lig/volume_sat;
+      System.out.println("n_sat = "+n_sat);
       
       // presence de satellites
 
