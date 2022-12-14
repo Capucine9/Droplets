@@ -152,6 +152,39 @@ class ImpliciteParticles {
       
       // cas impair
       if ( (N-2)%2 == 1 ) {
+        float decalage = demi_distance / ((N-2)+1);
+        int indice_milieu = (int) ((N+1)*0.5);
+        System.err.println("IMPAIR");
+        
+        // centre
+        particles.points.get(indice_milieu).x = (particles.points.get(0).x - demi_distance);
+        translate(particles.points.get(indice_milieu).x, particles.points.get(indice_milieu).y*zoom, 0);
+        if (Sphere)sphere(particles.radius.get(indice_milieu)*zoom);
+        translate(-particles.points.get(indice_milieu).x, -particles.points.get(indice_milieu).y*zoom, 0);
+        
+
+        for ( int i = 1; i <= (N-3)*0.5; i++ ) {
+
+          int indice_gauche = indice_milieu - i;
+          int indice_droite = indice_milieu + i;
+          int x_gauche = 0;
+          int x_droite = 0;
+          x_gauche = (int) (particles.points.get(1).x + demi_distance - i*decalage);
+          x_droite = (int) (particles.points.get(0).x - demi_distance + i*decalage );
+           
+          
+          // gauche
+          particles.points.get(indice_gauche).x = x_gauche;
+          translate(particles.points.get(indice_gauche).x, particles.points.get(indice_gauche).y*zoom, 0);
+          if (Sphere)sphere(particles.radius.get(indice_gauche)*zoom);
+          translate(-particles.points.get(indice_gauche).x, -particles.points.get(indice_gauche).y*zoom, 0);
+          
+          // droite
+          particles.points.get(indice_droite).x = x_droite;
+          translate(particles.points.get(indice_droite).x, particles.points.get(indice_droite).y*zoom, 0);
+          if (Sphere)sphere(particles.radius.get(indice_droite)*zoom);
+          translate(-particles.points.get(indice_droite).x, -particles.points.get(indice_droite).y*zoom, 0);
+        }
 
       // cas pair
       }else{
