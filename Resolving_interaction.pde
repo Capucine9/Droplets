@@ -35,7 +35,6 @@ class Resolving_interaction{
   void init() {
     //particles = new ImpliciteParticles();
     
-    if (!Sphere)
     delta = particles.radius.get(1) / particles.radius.get(0);
     f_delta = pow(delta,-3)-2.4*pow(delta,-2)+2.7*pow(delta,-1);
     

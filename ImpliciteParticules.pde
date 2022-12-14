@@ -15,7 +15,7 @@ class ImpliciteParticles {
   float posX1;
   float posX2;
   float posY = 0;
-  float zoom = 30;
+  float zoom = 500;
   float zoom_tetra = 130;
   float diff_hauteur = 0;
   int espace_begin = 500;
@@ -55,11 +55,11 @@ class ImpliciteParticles {
      //points.get(0).y = posY+diff_hauteur*0.5;
 
     for (int i = 0; i < N-1; i++){
-      if (minimumY > points.get(i).y-(radius.get(i)+1)*zoom)
-          minimumY = points.get(i).y-(radius.get(i)+1)*zoom;
+      if (minimumY > points.get(i).y-(radius.get(i)+1)*20)
+          minimumY = points.get(i).y-(radius.get(i)+1)*20;
           
-      if (maximumY < points.get(i).y+(radius.get(i)+1)*zoom)
-          maximumY = points.get(i).y+(radius.get(i)+1)*zoom;
+      if (maximumY < points.get(i).y+(radius.get(i)+1)*20)
+          maximumY = points.get(i).y+(radius.get(i)+1)*20;
     }
   }
   
@@ -114,7 +114,7 @@ class ImpliciteParticles {
     }
 
     // to have the origin at the center of the screen
-    translate(width/2, height/2, 0);
+    //translate(width/2, height/2, 0);
 
     // for ( int i = 0; i < N; i++ ) {
     //   if ( isCollision && !isRuptured ) {
@@ -138,7 +138,7 @@ class ImpliciteParticles {
 
     if ( isCollision && !isRuptured ) {
       for ( int i = 0; i < 2; i++ ) {
-        if (Sphere){
+        if (print_sphere){
           translate(particles.points.get(i).x, particles.points.get(i).y*zoom, 0);
           sphere(particles.radius.get(i)*zoom);
           translate(-particles.points.get(i).x, -particles.points.get(i).y*zoom, 0);
@@ -154,13 +154,14 @@ class ImpliciteParticles {
       if ( (N-2)%2 == 1 ) {
         float decalage = demi_distance / ((N-2)+1);
         int indice_milieu = (int) ((N+1)*0.5);
-        System.err.println("IMPAIR");
         
         // centre
         particles.points.get(indice_milieu).x = (particles.points.get(0).x - demi_distance);
-        translate(particles.points.get(indice_milieu).x, particles.points.get(indice_milieu).y*zoom, 0);
-        if (Sphere)sphere(particles.radius.get(indice_milieu)*zoom);
-        translate(-particles.points.get(indice_milieu).x, -particles.points.get(indice_milieu).y*zoom, 0);
+        if (print_sphere) {
+          translate(particles.points.get(indice_milieu).x, particles.points.get(indice_milieu).y*zoom, 0);
+          sphere(particles.radius.get(indice_milieu)*zoom);
+          translate(-particles.points.get(indice_milieu).x, -particles.points.get(indice_milieu).y*zoom, 0);
+        }
         
 
         for ( int i = 1; i <= (N-3)*0.5; i++ ) {
@@ -173,17 +174,16 @@ class ImpliciteParticles {
           x_droite = (int) (particles.points.get(0).x - demi_distance + i*decalage );
            
           
-          // gauche
           particles.points.get(indice_gauche).x = x_gauche;
-          translate(particles.points.get(indice_gauche).x, particles.points.get(indice_gauche).y*zoom, 0);
-          if (Sphere)sphere(particles.radius.get(indice_gauche)*zoom);
-          translate(-particles.points.get(indice_gauche).x, -particles.points.get(indice_gauche).y*zoom, 0);
-          
-          // droite
           particles.points.get(indice_droite).x = x_droite;
-          translate(particles.points.get(indice_droite).x, particles.points.get(indice_droite).y*zoom, 0);
-          if (Sphere)sphere(particles.radius.get(indice_droite)*zoom);
-          translate(-particles.points.get(indice_droite).x, -particles.points.get(indice_droite).y*zoom, 0);
+          if (print_sphere) {
+            translate(particles.points.get(indice_gauche).x, particles.points.get(indice_gauche).y*zoom, 0);
+            sphere(particles.radius.get(indice_gauche)*zoom);
+            translate(-particles.points.get(indice_gauche).x, -particles.points.get(indice_gauche).y*zoom, 0);
+            translate(particles.points.get(indice_droite).x, particles.points.get(indice_droite).y*zoom, 0);
+            sphere(particles.radius.get(indice_droite)*zoom);
+            translate(-particles.points.get(indice_droite).x, -particles.points.get(indice_droite).y*zoom, 0);
+          }
         }
 
       // cas pair
@@ -207,20 +207,16 @@ class ImpliciteParticles {
           }
           
 
-          
-          // gauche
           particles.points.get(indice_gauche).x = x_gauche;
-          translate(particles.points.get(indice_gauche).x, particles.points.get(indice_gauche).y*zoom, 0);
-          if (Sphere)
-            sphere(particles.radius.get(indice_gauche)*zoom);
-          translate(-particles.points.get(indice_gauche).x, -particles.points.get(indice_gauche).y*zoom, 0);
-          
-          // droite
           particles.points.get(indice_droite).x = x_droite;
-          translate(particles.points.get(indice_droite).x, particles.points.get(indice_droite).y*zoom, 0);
-          if (Sphere)
+          if (print_sphere) {
+            translate(particles.points.get(indice_gauche).x, particles.points.get(indice_gauche).y*zoom, 0);
+            sphere(particles.radius.get(indice_gauche)*zoom);
+            translate(-particles.points.get(indice_gauche).x, -particles.points.get(indice_gauche).y*zoom, 0);
+            translate(particles.points.get(indice_droite).x, particles.points.get(indice_droite).y*zoom, 0);
             sphere(particles.radius.get(indice_droite)*zoom);
-          translate(-particles.points.get(indice_droite).x, -particles.points.get(indice_droite).y*zoom, 0);
+            translate(-particles.points.get(indice_droite).x, -particles.points.get(indice_droite).y*zoom, 0);
+          }
 
         }
       }
@@ -230,20 +226,22 @@ class ImpliciteParticles {
     }else{
       for ( int i = 0; i < N; i++ ) {
         if ( i < 2 ) {
-          translate(particles.points.get(i).x, particles.points.get(i).y*zoom, 0);
-          if (Sphere)
+          if (print_sphere) {  
+            translate(particles.points.get(i).x, particles.points.get(i).y*zoom, 0);
             sphere(particles.radius.get(i)*zoom);
-          translate(-particles.points.get(i).x, -particles.points.get(i).y*zoom, 0);
+            translate(-particles.points.get(i).x, -particles.points.get(i).y*zoom, 0);
+          }
         }else{
-          translate(particles.points.get(i).x, particles.points.get(i).y*zoom, 0);
-          if (Sphere)
+          if (print_sphere) {
+            translate(particles.points.get(i).x, particles.points.get(i).y*zoom, 0);
             sphere(particles.radius.get(i)*zoom);
-          translate(-particles.points.get(i).x, -particles.points.get(i).y*zoom, 0);
+            translate(-particles.points.get(i).x, -particles.points.get(i).y*zoom, 0);
+          }
         }
       }
     }
     
-    translate(-width/2, -height/2, 0);
+    //translate(-width/2, -height/2, 0);
     
   }
 

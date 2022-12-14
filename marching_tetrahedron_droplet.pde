@@ -49,7 +49,6 @@ void poly(PVector v1, PVector v2, PVector v3, PVector v4) {
 
 
 void frameMarching() {
-  Sphere = false;
   
   //parcours de l'affichage
   for (int i = -cols+1; i < cols-1; i++) {
@@ -116,8 +115,7 @@ void frameMarching() {
                                particles.evalInt(x+rez, y+rez, z),
                                particles.evalInt(x, y+rez, z),
                                particles.evalInt(x+rez, y, z+rez));
-                               
-        fill(255);
+                           
         noStroke();
         
         //trace des triangles et polygones en fonction de l'etat du tetraedre
@@ -309,9 +307,6 @@ void frameMarching() {
       }
     }
   }
-  
-  //interactions = new Resolving_interaction();
-  particles.nextStep();
 }
 
 // a,b,c et d egal a 0 ou 1 selon la couleur (on trouve l'etat/ la configuration du voxel) pour dessiner la configuration de notre voxel

@@ -14,6 +14,7 @@ class IHM {
   DropdownList R_diameter;
   DropdownList L_velocity; 
   DropdownList R_velocity; 
+  CheckBox checkbox;
   
   int margeLeft = 10;
   
@@ -75,6 +76,15 @@ class IHM {
     
     customizeVelocity(L_velocity);
     customizeVelocity(R_velocity);
+    
+    controlP5.setFont(createFont("arial",15));
+    checkbox = controlP5.addCheckBox("checkBox")
+                .setPosition(width-250, 10)
+                .setSize(40, 40)
+                .setItemsPerRow(3)
+                .setSpacingColumn(30)
+                .setSpacingRow(20)
+                .addItem("Marching Tetrahedron", 0);
     
   }
   

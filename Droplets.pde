@@ -117,7 +117,7 @@ IHM ihm;
 
 Resolving_interaction resolv;
 boolean run = false;
-boolean Sphere = false;
+boolean print_sphere = false;
 
 float speed = 1;
 
@@ -140,6 +140,7 @@ void setup() {
   initMarching();
   resolv = new Resolving_interaction();
   resolv.init();
+  
   ihm = new IHM(this,resolv);
   //resolv.calcul_We();
   //noFill();
@@ -155,11 +156,13 @@ void draw() {
   translate(width/2, height/2, -width/2);
   lights();
   noFill();
-  //fill(3, 161, 252);
-  //frameSimpleSphere();
-  frameMarching();
-  //fill(255);
+  fill(3, 161, 252);
+  if ( !print_sphere )
+    frameMarching();
+  stroke(30,180,255);
+  particles.nextStep();
   
+  fill(255);
   
   
   
@@ -204,6 +207,7 @@ void draw() {
     resolv.init(); 
     ihm.resolv = resolv;
   }
+  print_sphere = !ihm.checkbox.getState(0);
   
   
   if ( run ) {
@@ -239,8 +243,6 @@ void mousePressed() {
  * Affiche les goutes comme de simple sphères. Ne fonctionne que si les sphère ont une vitesse Y et Z nulle
  **/
 void frameSimpleSphere () {
-  Sphere = true;
-  particles.nextStep();
   // int zoom = 30;
   // float decalage_y = particles.diff_hauteur/(particles.velocity.size()-2);
   // float y = decalage_y;
