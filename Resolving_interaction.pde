@@ -234,6 +234,7 @@ class Resolving_interaction{
     particles.velocity.get(0).x = particles.velocity.get(0).x * -1;
     
     
+    
     System.out.println("v_lig = "+V_lig);
     if (V_lig > 0){
       // EQ8 r_sat 

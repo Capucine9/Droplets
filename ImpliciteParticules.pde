@@ -55,11 +55,11 @@ class ImpliciteParticles {
      //points.get(0).y = posY+diff_hauteur*0.5;
 
     for (int i = 0; i < N-1; i++){
-      if (minimumY > points.get(i).y-(radius.get(i)+1)*20)
-          minimumY = points.get(i).y-(radius.get(i)+1)*20;
+      if (minimumY > points.get(i).y-(radius.get(i)+1)*29)
+          minimumY = points.get(i).y-(radius.get(i)+1)*29;
           
-      if (maximumY < points.get(i).y+(radius.get(i)+1)*20)
-          maximumY = points.get(i).y+(radius.get(i)+1)*20;
+      if (maximumY < points.get(i).y+(radius.get(i)+1)*29)
+          maximumY = points.get(i).y+(radius.get(i)+1)*29;
     }
   }
   
@@ -144,7 +144,7 @@ class ImpliciteParticles {
           translate(-particles.points.get(i).x, -particles.points.get(i).y*zoom, 0);
         }
       }
-      float demi_distance = (points.get(0).x-points.get(1).x-radius.get(0)-radius.get(1))*0.5;
+      float demi_distance = (points.get(0).x-points.get(1).x-(radius.get(0)+radius.get(1))*0.5)*0.5;
       
 
 
@@ -152,7 +152,7 @@ class ImpliciteParticles {
       
       // cas impair
       if ( (N-2)%2 == 1 ) {
-        float decalage = demi_distance / ((N-2)+1);
+        float decalage = (demi_distance*2) / ((N-2)+1);
         int indice_milieu = (int) ((N+1)*0.5);
         
         // centre
@@ -188,7 +188,7 @@ class ImpliciteParticles {
 
       // cas pair
       }else{
-        float decalage = demi_distance / ((N-2));
+        float decalage = (demi_distance*2) / ((N-2));
         int indice_milieu = (int) ((N-2)*0.5) + 1;
         
 
@@ -258,7 +258,7 @@ class ImpliciteParticles {
     }
     for (int r=2; r<N; r++){
       float zoom_sat = 1;
-      if ( radius.get(r) < 0.5 ) zoom_sat = 3;
+      if ( radius.get(r) < 0.3 ) zoom_sat = 3;
       PVector tmp = new PVector(points.get(r).x, points.get(r).y*zoom_tetra*zoom_sat, points.get(r).z);
       v += f(tmp.dist(n)/(radius.get(r)*zoom_tetra*zoom_sat));
     }
@@ -283,14 +283,24 @@ class ImpliciteParticles {
     boolean ret = false;
 
     if ( N > 2 && isCollision ) {
-      float distance = resolv.norm(new PVector(points.get(0).x-points.get(1).x,points.get(0).y-points.get(1).y,0)) - radius.get(0) - radius.get(1);
-
-
-
-      if ( distance*2/zoom > radius.get(2)*2*(N-2)) {
-        isRuptured = true;
-        System.err.println("Rupture");
+      float distance = 0;
+      if ( print_sphere ) {
+        distance = resolv.norm(new PVector(points.get(0).x-points.get(1).x,0,0)) - radius.get(0) - radius.get(1);
+        if ( distance > radius.get(2)*2*(N-2)*zoom ) {
+          isRuptured = true;
+          System.err.println("Rupture");
+        }
+    
+      }else{
+        distance = resolv.norm(new PVector(points.get(0).x-points.get(1).x,0,0)) - radius.get(0) - radius.get(1);
+        if ( distance > radius.get(2)*2*(N-2)*zoom_tetra ) {
+          isRuptured = true;
+          System.err.println("Rupture");
+        }
+      
       }
+
+      
     }
     return ret;
   }
