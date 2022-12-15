@@ -278,16 +278,14 @@ class ImpliciteParticles {
 			if ( print_sphere ) {
 				distance = resolv.norm(new PVector(points.get(0).x-points.get(1).x,0,0)) - radius.get(0) - radius.get(1);
 				if ( distance > radius.get(2)*2*(N-2)*zoom ) {
-				isRuptured = true;
-				System.err.println("Rupture");
+				  isRuptured = true;
 				}
 			
 			// else marching printing is enabled
 			}else{
 				distance = resolv.norm(new PVector(points.get(0).x-points.get(1).x,0,0)) - radius.get(0) - radius.get(1);
 				if ( distance > radius.get(2)*2*(N-2)*zoom_tetra ) {
-				isRuptured = true;
-				System.err.println("Rupture");
+  				isRuptured = true;
 				}
 			
 			}

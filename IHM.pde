@@ -140,25 +140,6 @@ class IHM {
     this.distance.setLabel(diffHeight[0]+"");
   }
   
-
-  
-  /**
-   * Customize speed dropdownlist
-   **/
-  void customizeSpeed() {
-    this.speed_ddl.setBackgroundColor(color(190));
-    this.speed_ddl.setItemHeight(30);
-    this.speed_ddl.setBarHeight(40);
-    for ( int i = 0; i < speed.length; i++ ) {
-      this.speed_ddl.addItem(speed[i]+"", i+1);
-    }
-    this.speed_ddl.setColorBackground(color(100));
-    this.speed_ddl.setColorActive(color(255,128));
-    this.speed_ddl.setValue(0);
-    this.speed_ddl.setOpen(false);
-    this.speed_ddl.setLabel(speed[0]+"");
-  }
-
   
   
   void printInterface() {  
