@@ -1,272 +1,133 @@
-//// Physically-Based Droplet Interaction
-
-/*
-// Variables
-
-// Parametres de la gouttelette i
-float u_i; // velocite
-float r_i; // rayon 
-float phi_i; // fraction de volume qui se chevauche
-
-// Parametres de la gouttelette j
-float u_j; // velocite 
-float r_j; // rayon
-float phi_j; // fraction de volume qui se chevauche
-
-// Parametres commums aux deux gouttelettes
-float rho; // densite
-float sigma; // tension superficielle
-float ksi; // 0.5*X*(1+delta)
-float eta_1; // 2*(1-ksi)^2*(1-ksi^2)^(1/2)-1
-float eta_2; // 2*(delta-ksi)^2*(delta^2-ksi^2)^(1/2)-delta^3
+/**
+ * Main file of the project
+ */
 
 
-
-float u_ij; // velocite relative (u_j - u_i)
-
-// Weber Number (rapport entre les forces d'inertie et les forces de tension superficielle)
-float We; // (2 * rho * ||u_ij||²) / sigma
-
-// Impact (plus courte distance entre les deux centres des gouttelettes orthogonaux à la vitesse relative)
-float X; // x / (r_i + r_j) = (||xij - xij^T * û * û||) / (r_i + r_j) avec xij = xj - xi et û = u_ij / ||u_ij||
-
-// Size ratio
-float delta; // r_j / r_i
-
-float f_delta; // delta^(-3)-2.4*delta^(-2)+2.7*delta^(-1)
-
-
-//// Stretching separation
-//EQ1
-float We_stretch; // (4*(1+delta^3)^2 *(3*(1+delta)*(1-X)*(delta^3*phi_j+phi_i))^(1/2)) / (delta^2*((1+delta^3)-(1-X^2)*(phi_j+delta^3*phi_i)))
-
-
-//// Reflexive separation
-//EQ2
-float We_reflex; // (3*(7*(1+delta^3)^(2/3)-4*(1+delta^2))*delta*(1+delta^3)^2) / (delta^6*eta_1+eta_2)
-
-
-
-// Actualisation de la velocite des gouttelettes
-//valable pour k,l = i,j
-//EQ3
-float u; //^~k; // (r_k^3*u_k+r_l^3*u_l-r_l^3*(u_k-u_l)*z) / (r_k^3+r_l^3)
-float  z; // si stretching separation : (X-((2.4*f_delta)/We)^(1/2)) / (1-((2.4*f_delta)/We)^(1/2))
-// si reflexive separation : (1-We_reflex/We)^(1/2)
-
-
-//// Volume des ligaments liquide
-//EQ6
-float E_stretch; // 1/2*rho*||u_ij||^2*V_i*(delta^3/((1+delta^3)^2))*((1+delta^3)-(1-X^2)*(phi_j+delta^3*phi_i))
-float tau; // (1-X)*(1+delta)
-//EQ7
-float E_surface; // 2*sigma*(pi*V_i*r_i*tau*(phi_i+delta^3*phi_j))^(1*2)
-float E_dissip; // 0.30 pour l'energie cinetique initiale des gouttelettes en collision
-//EQ5
-float C_sep; // coeff de separation de volume (E_stretch-E_surface-E_dissip) / (E_stretch+E_surface+E_dissip)
-
-// Stretching separation
-//EQ4
-float V_lig; // volume du ligament liquide resultant C_sep*(Vinteract_i+Vinteract_j) avec Vinteract_k = V_k*phi_k
-// V_k=4/3*pi*r_k^3 
-
-// Reflexive separation
-// V_lig = V_i+V_j;
-
-
-//if V_lig >0 : ligaments et satellites
-
-
-//// Instabilite des ligaments
-float k_1; // 11.5
-float k_2; // 0.45
-float beta; // 3/(4*2^(1/2))*(k_1*k_2)
-float We_0; //2*r_0*rho/sigma*||u_ij||^2 avec r_0 rayon initial egal a longueur initiale du cylindre 
-float r_bu; // rayon de rupture du cylindre calculable avec :
-//EQ8
-// beta*We_0^(1/2)*(r_bu/r_0)^(7/2)+(r_bu/r_0)^2-1=0
-
-float r_sat; // rayon des satellites 1.89*r_bu
-
-//// Nombre de satellites
-// Stretching separation
-
-// Reflexive separation
-
-
-
-//// Vitesse des satellites
-// for n=1,....n_sat
-//EQ9
-// u_n=V_lig_i/V_lig*u~_i+V_lig_j/V_lig*(u~j+(1-2n*(n_sat+1))*u~_ij)
-
-
-//5.2.3
-//5.3.1
-
-
-*/
-// import 3D camera handler package (PeasyCam)
-import peasy.*;
-
-
-// camera
-PeasyCam cam;
-
+// the class which manage the interface of the simulation
 IHM ihm;
 
+// class to solve equations to predict droplet behaviour
 Resolving_interaction resolv;
+
+// boolean to let run the simaltion, or stop it
 boolean run = false;
+// boolean to inform the way of droplet printing
 boolean print_sphere = false;
 
-float speed = 1;
 
 
+/**
+ * Called after create the windows
+ **/
 void settings() {
-  size((int)(1280*1),(int)(720*1), P3D);
+  	size((int)(1280*1),(int)(720*1), P3D);
 }
 
 
 
+/**
+ * Called at the creation od the windows. Inizialize variables, commands and the environment
+ * to set up the simulation.
+ **/
 void setup() {
+	// create and initialize the marching tetrahedron engine (for displaying)
+  	initMarching();
+	// initializing the solver
+  	resolv = new Resolving_interaction();
+  	resolv.init();
+	// initialize the ihm
+  	ihm = new IHM(this,resolv);
   
-  // init the camera 
-  //cam = new PeasyCam(this, width/2, height/2, 0, 900);
-  //cam.setMinimumDistance(50);        // the power of the zoom
-  //cam.setMaximumDistance(3000);      // the power of the dezoom
-  //cam.setYawRotationMode();          // allow rotation only on the axe y
-  
-  
-  initMarching();
-  resolv = new Resolving_interaction();
-  resolv.init();
-  
-  ihm = new IHM(this,resolv);
-  //resolv.calcul_We();
-  //noFill();
-  
-  if ( particles.radius.get(0)+particles.radius.get(1) <= particles.diff_hauteur)
-    System.out.println("No collision");
+	// prevent no collision if the droplets are to espaced (in y)
+  	if ( particles.radius.get(0)+particles.radius.get(1) <= particles.diff_hauteur)
+    	System.err.println("No collision");
 }
 
 
+
+/**
+ * Called each frame of the windows. Change droplets position according to their velocity,
+ * check collision to ask the solver to predict the result, and display ihm and droplets.
+ **/
 void draw() {
-  background(75);
+  	background(75);
   
-  translate(width/2, height/2, -width/2);
-  lights();
-  noFill();
-  fill(3, 161, 252);
-  if ( !print_sphere )
-    frameMarching();
-  stroke(30,180,255);
-  particles.nextStep();
+	// put the origin at the center of the screen (a little below)
+	translate(width/2, height/1.7, -width/2);
+	lights();
+	noFill();
+	fill(3, 161, 252);
+	
+	particles.nextStep();		//	move droplets (and launch basic display if marching is disabled)
+	if ( !print_sphere )		// if marching printing is on
+		frameMarching();		// display droplets with the marching algorithm
+	stroke(30,180,255);
+	
+	fill(255);
+	// cancel shift 
+	translate(-width/2, -height/1.7, width/2);
+
   
-  fill(255);
-  
-  
-  
-  translate(-width/2, -height/2, width/2);
-  
-  // get distance
-  int distance_selected = Integer.parseInt(""+ihm.distance.getItem((int)ihm.distance.getValue()).get("text"));
-  // get speed
-  //float speed_selected = Float.parseFloat(""+ihm.speed_ddl.getItem((int)ihm.speed_ddl.getValue()).get("text"));
-  // get size Ball 1
-  float size_0_selected = Float.parseFloat(""+ihm.L_diameter.getItem((int)ihm.L_diameter.getValue()).get("text"));
-  // get speed Ball 1
-  float speed_0_selected = Float.parseFloat(""+ihm.L_velocity.getItem((int)ihm.L_velocity.getValue()).get("text"));
-  // get size Ball 2
-  float size_1_selected = Float.parseFloat(""+ihm.R_diameter.getItem((int)ihm.R_diameter.getValue()).get("text"));
-  // get speed Ball 2
-  float speed_1_selected = Float.parseFloat(""+ihm.L_velocity.getItem((int)ihm.R_velocity.getValue()).get("text"));
+	// Get value selected by the user in the IHM
+	int distance_selected = Integer.parseInt(""+ihm.distance.getItem((int)ihm.distance.getValue()).get("text"));
+	float size_0_selected = Float.parseFloat(""+ihm.L_diameter.getItem((int)ihm.L_diameter.getValue()).get("text"));
+	float speed_0_selected = Float.parseFloat(""+ihm.L_velocity.getItem((int)ihm.L_velocity.getValue()).get("text"));
+	float size_1_selected = Float.parseFloat(""+ihm.R_diameter.getItem((int)ihm.R_diameter.getValue()).get("text"));
+	float speed_1_selected = Float.parseFloat(""+ihm.L_velocity.getItem((int)ihm.R_velocity.getValue()).get("text"));
+	
+	// if the value has change the value of a filed
+	if ( distance_selected != ihm.diff_hauteur_selected ||
+		size_0_selected != ihm.droplet_radius_selected[0] ||
+		speed_0_selected != ihm.droplet_speed_selected[0] || 
+		size_1_selected != ihm.droplet_radius_selected[1] ||
+		speed_1_selected != ihm.droplet_speed_selected[1] ) {
+
+		// then re-init the simulation
+		ihm.diff_hauteur_selected = distance_selected;
+		distance = (ihm.diff_hauteur_selected*0.01)*(size_0_selected+size_1_selected);
+		initMarching();
+    
+		// save selected value
+		if ( !particles.isCollision ) particles.radius.set(0, size_0_selected);
+		if ( !particles.isCollision ) particles.velocity.set(0, new PVector(speed_0_selected,particles.velocity.get(0).y,0));
+		ihm.droplet_radius_selected[0] = size_0_selected;
+		ihm.droplet_speed_selected[0] = speed_0_selected;
+		if ( !particles.isCollision ) particles.radius.set(1, size_1_selected);
+		if ( !particles.isCollision ) particles.velocity.set(1, new PVector(-speed_1_selected,particles.velocity.get(1).y,0));
+		ihm.droplet_radius_selected[1] = size_1_selected;
+		ihm.droplet_speed_selected[1] = speed_1_selected;
+	
+		resolv = new Resolving_interaction();
+		resolv.init(); 
+		ihm.resolv = resolv;
+	}
+  	print_sphere = !ihm.checkbox.getState(0);
   
 
-  if ( distance_selected != ihm.diff_hauteur_selected ||
-       size_0_selected != ihm.droplet_radius_selected[0] ||
-       speed_0_selected != ihm.droplet_speed_selected[0] || 
-       size_1_selected != ihm.droplet_radius_selected[1] ||
-       speed_1_selected != ihm.droplet_speed_selected[1] ) {
-         
-         
-    ihm.diff_hauteur_selected = distance_selected;
-    distance = (ihm.diff_hauteur_selected*0.01)*(size_0_selected+size_1_selected);
-    initMarching();
-    
-    //speed = speed_selected;
-    if ( !particles.isCollision ) particles.radius.set(0, size_0_selected);
-    if ( !particles.isCollision ) particles.velocity.set(0, new PVector(speed_0_selected,particles.velocity.get(0).y,0));
-    ihm.droplet_radius_selected[0] = size_0_selected;
-    ihm.droplet_speed_selected[0] = speed_0_selected;
-    if ( !particles.isCollision ) particles.radius.set(1, size_1_selected);
-    if ( !particles.isCollision ) particles.velocity.set(1, new PVector(-speed_1_selected,particles.velocity.get(1).y,0));
-    ihm.droplet_radius_selected[1] = size_1_selected;
-    ihm.droplet_speed_selected[1] = speed_1_selected;
+	// if the lecture mode is enable
+	if ( run ) {    
+		// if there is collision
+		if ( particles.radius.get(0)+particles.radius.get(1) > particles.diff_hauteur) {
+		if (particles.points.get(1).x - particles.points.get(0).x < 0 && particles.isCollision == false){
+			particles.isCollision = true;
+			resolv.calcul_We(); 		// prediction
+		}
+		// detect the moment where the ligament breaks
+		if ( !particles.isRuptured && particles.isRupture() )
+			particles.isRuptured = true;
+		}
+	}  
   
-    resolv = new Resolving_interaction();
-    resolv.init(); 
-    ihm.resolv = resolv;
-  }
-  print_sphere = !ihm.checkbox.getState(0);
-  
-  
-  if ( run ) {
-    try{
-    //Thread.sleep((long)(abs(1-(1/speed)))*1000);
-    }catch(Exception e){e.printStackTrace();}
-    
-    // collision
-    if ( particles.radius.get(0)+particles.radius.get(1) > particles.diff_hauteur) {
-      if (particles.points.get(1).x - particles.points.get(0).x < 0 && particles.isCollision == false){
-        particles.isCollision = true;
-        //particles.limite = 0.5;
-        resolv.calcul_We(); // determine le type de collision
-      }
-      if ( !particles.isRuptured && particles.isRupture() )
-        particles.isRuptured = true;
-    }
-  }  
-  
+  // print the interface
   ihm.printInterface();
 }
+
 
 
 /**
  * Method executed when the user click on a mouse button
  **/
 void mousePressed() {
- if ( mouseButton == RIGHT ) run = !run;
-}
-
-
-/**
- * Affiche les goutes comme de simple sphères. Ne fonctionne que si les sphère ont une vitesse Y et Z nulle
- **/
-void frameSimpleSphere () {
-  // int zoom = 30;
-  // float decalage_y = particles.diff_hauteur/(particles.velocity.size()-2);
-  // float y = decalage_y;
-    
-  // for ( int i = 0; i < N; i++ ) {
-  //   // Move the droplet n°1
-  //   if ( i == 1 ) {
-  //     translate(particles.points.get(i).x, particles.points.get(0).y-particles.diff_hauteur*zoom, 0);
-  //     sphere(particles.radius.get(i)*zoom);
-  //     translate(-particles.points.get(i).x, -(particles.points.get(0).y-particles.diff_hauteur*zoom), 0);
-
-  //   // Move the satelites droplets
-  //   }else if ( i >= 2 ) {
-  //     //float decalage = particles.points.get(0).y-(particles.diff_hauteur*(zoom/2));
-  //     translate(particles.points.get(i).x,  particles.points.get(0).y + y*zoom, 0);
-  //     sphere(particles.radius.get(i)*zoom);
-  //     translate(-particles.points.get(i).x, -(particles.points.get(0).y + y*zoom), 0);
-  //     y += decalage_y;
-
-  //   // Don't move the droplet n°0
-  //   }else{
-  //     translate(particles.points.get(i).x, particles.points.get(i).y, 0);
-  //     sphere(particles.radius.get(i)*zoom);
-  //     translate(-particles.points.get(i).x, -particles.points.get(i).y, 0);
-  //   }
-  // }
+	// at the right mouse button click, change the lecture mode
+	if ( mouseButton == RIGHT ) run = !run;
 }
