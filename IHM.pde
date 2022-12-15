@@ -1,20 +1,20 @@
 import controlP5.*;
 
-// TODO : telecharger la librairie
-
+/**
+ * Class that manage the interface of the simulation
+ **/
 class IHM {
   
   ControlP5 controlP5;
   Resolving_interaction resolv;
   
   DropdownList distance; 
-  DropdownList speed_ddl; 
+  CheckBox checkbox;
   
   DropdownList L_diameter; 
   DropdownList R_diameter;
   DropdownList L_velocity; 
   DropdownList R_velocity; 
-  CheckBox checkbox;
   
   int margeLeft = 10;
   
@@ -54,11 +54,6 @@ class IHM {
     customizeDistance();
     
     
-    // initialize the speed dropdownlist
-    //speed_ddl = controlP5.addDropdownList("... ",width-120, level_height-15,100,300);
-    //speed_ddl.setFont(createFont("arial",15));
-    //customizeSpeed();
-    
     
     // customize diameter and velocity dropdownlist
     L_diameter = controlP5.addDropdownList("...  ",margeLeft*4,150,100,300);
@@ -89,6 +84,7 @@ class IHM {
   }
   
   
+  
   /**
    * Customize diameter dropdownlist
    **/
@@ -106,6 +102,7 @@ class IHM {
     ddl.setLabel(diameter[0]+"");
   } 
   
+
   
   /**
    * Customize velocity dropdownlist
@@ -125,6 +122,7 @@ class IHM {
   }
   
   
+
   /**
    * Customize distance dropdownlist
    **/
@@ -142,6 +140,7 @@ class IHM {
     this.distance.setLabel(diffHeight[0]+"");
   }
   
+
   
   /**
    * Customize speed dropdownlist
@@ -162,10 +161,6 @@ class IHM {
 
   
   
-  
- 
-  
-  
   void printInterface() {  
     
     // ======================================================================================
@@ -175,14 +170,12 @@ class IHM {
     text("Distance de hauteur des centres des gouttes (%) :", margeLeft, level_height);  // * 2.5 to avoid text in the windows bar
    
     
-    
     // ======================================================================================
     // Left dorplet
     // ======================================================================================
     text("Goutte Gauche", margeLeft, level_side);
     text("Diametre (cm) :", margeLeft, level_diameter_velocity);
     text("Vitesse (m/s) :", margeLeft+200, level_diameter_velocity);
-    
     
         
     // ======================================================================================
@@ -192,23 +185,12 @@ class IHM {
     text("Diametre (cm) :", width-360, level_diameter_velocity);
     text("Vitesse (m/s) :", width-160, level_diameter_velocity);
     
-    
 
     // ======================================================================================
-    // Simulation' velocity
+    // Collision type
     // ======================================================================================
-    //text("Vitesse de la simulation : ", width-400,level_height);  
     try{
       text("Type : "+resolv.predict(),margeLeft, height-30);
     }catch(Exception e){}
   }
-  
-  
-  
-  void updateTypeCollision () {
-    
-  }
-
-  
-  
 }
